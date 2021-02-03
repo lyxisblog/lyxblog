@@ -33,7 +33,7 @@ module.exports = {
         "icon": "reco-date"
       },
       {
-        "text": "文档",
+        "text": "插件",
         "icon": "reco-message",
         "items": [
           {
@@ -87,10 +87,15 @@ module.exports = {
         "link": "https://github.com/lyxisblog"
       }
     ],
+    // "keyPage":{
+    //   "keys" : ['123'], // 1.3.0 版本后需要设置为密文
+    //   "color" : '#42b983', // 登录页动画球的颜色
+    //   "lineColor" : '#42b983' // 登录页动画线的颜色
+    // },
     "logo": "/avatar2.png",
     "search": true,
     "searchMaxSuggestions": 10,
-    "lastUpdated": "Last Updated",
+    "lastUpdated": "最后更新时间",
     "author": "强到活捉喜羊羊",
     "authorAvatar": "/avatar.jpg",
     "record": "沪ICP备20201227",
