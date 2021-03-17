@@ -75,13 +75,13 @@ module.exports = {
     },
     "friendLink": [     //友情链接
       {
-        "title": "test1",
-        "desc": "Enjoy when you can, and endure when you must.",
-        "email": "1156743527@qq.com",
-        "link": "https://github.com/lyxisblog"
+        "title": "TypeScript",
+        "desc": "TypeScript DOC",
+        "email": "577732515@qq.com",
+        "link": "https://www.tslang.cn/docs/home.html"
       },
       {
-        "title": "test2",
+        "title": "GitHub",
         "desc": "A simple and beautiful vuepress Blog & Doc theme.",
         "avatar": "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
         "link": "https://github.com/lyxisblog"
