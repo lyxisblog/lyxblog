@@ -2,7 +2,7 @@ module.exports = {
   "title": "强到活捉喜羊羊",
   "description": "记录美好生活",
   "dest": "public",
-  "base":"/lyxblog/",      //部署GitHub
+  "base":"/",      //部署GitHub
   "head": [
     [
       "link",
@@ -43,7 +43,7 @@ module.exports = {
         ]
       },
       {
-        "text": "contact me",
+        "text": "联系我",
         "icon": "reco-message",
         "items": [
           {
@@ -71,7 +71,7 @@ module.exports = {
       "tag": {
         "location": 3,
         "text": "Tag"
-      }
+      },
     },
     "friendLink": [     //友情链接
       {

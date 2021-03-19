@@ -116,4 +116,4 @@ console.log(site) // function () { … }
 site();// zhangpeiyue.com
 ```
 
-以上是`apply()`、`call()`和`bind()`原理讲解，如果你还觉得不够，那么可以[JS基础篇-call()、apply()与bind()的区别及实现原理解析及妙用（2）](http://localhost:8080/lyxblog/blogs/category1/2019/call%E4%B8%8Eapply()%E4%B8%8Ebind()%E7%9A%84%E5%A6%99%E7%94%A8(2)%20.html)如果在项目中巧妙的使用它们！
+以上是`apply()`、`call()`和`bind()`原理讲解，如果你还觉得不够，那么可以[JS基础篇-call()、apply()与bind()的区别及实现原理解析及妙用（2）](/blogs/category1/2019/call与apply()与bind()的妙用(2).html)如果在项目中巧妙的使用它们！
