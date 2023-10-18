@@ -9,7 +9,8 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1080 height=1920></canvas>
+      <video autoplay class="video" width=100vw height=100vh></video>
+      <canvas id="unity-canvas" class="unity-canvas" width=100vw height=100vh style="background: transparent"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -31,12 +32,41 @@
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
 
+      let video = document.querySelector('.video');
+      function openx() {
+          let constraints = {
+              video: {            //这里是摄像头的信息
+                  height: 500,
+                  width: 500
+              },
+          // audio: true,  //是否开启麦克风
+          }
+          let isok = navigator.mediaDevices.getUserMedia(constraints); //这里主要是用于请求用户打开摄像头的权限
+          isok.then(res => {     //可以看出是使用promise封装的 那么我们就可以使用then和catch
+              video.srcObject = res;    //用户允许时 将摄像头对象的画面转移到video上面
+              video.play();                //打开video的画面
+          }).catch((err) => {
+              console.log(err)            //拒绝时打印错误信息
+          })
+      }
+      function pho() {
+          canvas.getContext("2d").drawImage(video, 0, 0, 300, 300);   //第一个参数为要截取的dom对象，第二个和第三个为xy轴的偏移值    3-4为截取图像的大小
+      }
+      function exit() {
+          video.srcObject.getTracks()[0].stop();   //这里如果打开了麦克风、getTracks是一个数组，我们同样需要获取下标[1]来关闭摄像头 打开麦克风[0]就是麦克风
+      }
+
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
       // If type=='warning', a yellow highlight color is used.
       // Modify or remove this function to customize the visually presented
       // way that non-critical warnings and error messages are presented to the
       // user.
+
+      function unityToJs(str){
+        console.log("html str ====== " + str);
+      }
+      
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -105,6 +135,7 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
+          openx()
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
