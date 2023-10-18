@@ -178,6 +178,7 @@
       }
 
       loadingBar.style.display = "block";
+      new window.VConsole();
 
       var script = document.createElement("script");
       script.src = loaderUrl;
@@ -187,15 +188,15 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
-          new window.VConsole();
 
           window.addEventListener('message', (e)=>{
             console.log(e.origin) 
             console.log(e.source)
             console.log(e.data)
-            JsToUnityTrigger(e.data)
+            // JsToUnityTrigger(e.data)
+            unityInstance.sendMessage("UnityJsBridge","JsToUnityTrigger",val);
           },false)
-
+          window.unityInstance=unityInstance;
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
