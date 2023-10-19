@@ -110,11 +110,12 @@
       // user.
 
       function unityToJs(str){
-        console.log("html str ====== " + str);
+        console.log("html str ====== " + str,"window.unityInstance",window.unityInstance);
       }
 
       function JsToUnityTrigger(val){
-        unityInstance.sendMessage("UnityJsBridge","JsToUnityTrigger",val);
+        console.log("val",val);
+        window.unityInstance.SendMessage('UnityJsBridge','JsToUnityTrigger',val);
       }
       
       function unityShowBanner(msg, type) {
@@ -189,13 +190,12 @@
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
 
-          window.addEventListener('message', (e)=>{
-            console.log(e.origin) 
-            console.log(e.source)
-            console.log(e.data)
-            // JsToUnityTrigger(e.data)
-            unityInstance.sendMessage("UnityJsBridge","JsToUnityTrigger",val);
-          },false)
+          // window.addEventListener('message', (e)=>{
+          //   console.log(e.origin) 
+          //   console.log(e.source)
+          //   console.log(e.data)
+          //   window.unityInstance.SendMessage("UnityJsBridge","JsToUnityTrigger",e.data);
+          // },false)
           window.unityInstance=unityInstance;
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
