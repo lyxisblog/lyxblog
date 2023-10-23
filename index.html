@@ -1,216 +1,90 @@
-<!-- Zappar WebGL template for Unity 2020 and above versions -->
-<!-- NFYNT -->
 <!DOCTYPE html>
 <html lang="en-us">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="shortcut icon" href="favicon.ico">
-    <title>ZapperARPro</title>
-    <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.4/zappar-cv.js"></script>
-    <style>
-        html {
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Unity WebGL Player | WebToJs</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
 
-        *,
-        *:before,
-        *:after {
-            box-sizing: inherit;
-        }
+  <!-- THREE.js must be supplied -->
+  <script src="./Build/three.min.js"></script>
+  <script src="./Build/PLYLoader.js"></script>
 
-        html,
-        body {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-        }
+  <!-- Required to load glTF (.gltf or .glb) models -->
+  <script src="./Build/GLTFLoader.js"></script>
 
-        canvas {
-            display: block;
-        }
+  <!-- Required to load FBX (.FBX) models -->
+  <script src="./Build/inflate.js"></script>
+  <script src="./Build/FBXLoader.js"></script>
 
-        body {
-            margin: 0;
-        }
+  <!-- Required to DRACOLoader models -->
+  <script src="./Build/DRACOLoader.js"></script>
 
-        #unity-container {
-            width: 100%;
-            height: 100%;
-        }
+  <!-- Javascript tweening engine -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
+  
+  <!-- XR Extras - provides utilities like load screen, almost there, and error handling.
+    See github.com/8thwall/web/tree/master/xrextras -->
+    <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
+    
+    <!-- XR Landing Pages -->
+    <!-- <script src='https://cdn.8thwall.com/web/landing-page/landing-page.js'></script> -->
+    
+    <!-- Coaching Overlay -->
+    <script src='https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js'></script>
+    
+    <!-- 8thWall Web - Replace the app key here with your own app key -->
+    <script async
+    src="//apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="./Build/index.js"></script>
+  <style>
+    #camerafeed {
+      width: 100vw;
+      height: 100vh;
+      /* z-index: 99; */
+      /* position:fixed;
+      left: 0;
+      top: 0;
+      z-index: 99999999; */
+    }
 
-        #unity-canvas {
-            width: 100%;
-            height: 100%;
-            background: #000000;
-        }
-
-        #loading-cover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #unity-loading-bar {
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #unity-progress-bar-empty {
-            width: 80%;
-            height: 24px;
-            margin: 10px 20px 20px 10px;
-            text-align: left;
-            border: 1px solid white;
-            padding: 2px;
-        }
-
-        #unity-progress-bar-full {
-            width: 0%;
-            height: 100%;
-            background: white;
-        }
-
-        .light #unity-progress-bar-empty {
-            border-color: black;
-        }
-
-        .light #unity-progress-bar-full {
-            background: black;
-        }
-
-        .spinner,
-        .spinner:after {
-            border-radius: 50%;
-            width: 5em;
-            height: 5em;
-        }
-
-        .spinner {
-            margin: 10px;
-            font-size: 10px;
-            position: relative;
-            text-indent: -9999em;
-            border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-            border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-            border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-            border-left: 1.1em solid #ffffff;
-            transform: translateZ(0);
-            animation: spinner-spin 1.1s infinite linear;
-        }
-
-        @keyframes spinner-spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+    #iframe{
+      width: 100vw;
+      height: 100vh;
+      /* z-index: 99; */
+      /* position:fixed;
+      left: 0;
+      top: 0; */
+      z-index: 99999;
+    }
+  </style>
 </head>
 
-<body class="dark">
-    <div id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas"></canvas>
+<body>
+  <!-- <canvas id="camerafeed" class="unity-canvas" width=100vw height=100vh style="background: transparent"></canvas> -->
+  <iframe id="iframe" src="https://8qzv9.zappar.io/6362171391710726513/1.0.2/" frameborder="0"></iframe>
+  <!-- <div id="unity-container" class="unity-desktop">
+    <video autoplay class="video" width="100vw" height="100vh" style="display:none;"></video>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
     </div>
-    <div id="loading-cover" style="display:none;">
-        <div id="unity-loading-bar">
-            <div id="unity-progress-bar-empty" style="display: none;">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-            <div class="spinner"></div>
-        </div>
+    <div id="unity-warning"> </div>
+    <div id="unity-footer">
+      <div id="unity-webgl-logo"></div>
+      <div id="unity-fullscreen-button"></div>
+      <div id="unity-build-title">WebToJs</div>
     </div>
-    <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.4/zappar-cv.js"></script>
-    <script>
-        var db = indexedDB.open("dummy_indexdb", 1); // iOS 14.6 fix; the call to open indexdb hangs forever otherwise
-
-        const buildUrl = "Build";
-        const loaderUrl = buildUrl + "/Web.loader.js";
-        const config = {
-            dataUrl: buildUrl + "/a80f9d6e9cea3fc37a062155a882a7f4.data.br",
-            frameworkUrl: buildUrl + "/351acdd9f25016188ad2043bdb7a70f4.js.br",
-            codeUrl: buildUrl + "/d63c6b14ff3d4e9631adb724f93504d8.wasm.br",
-            streamingAssetsUrl: "StreamingAssets",
-            companyName: "DefaultCompany",
-            productName: "ZapperARPro",
-            productVersion: "0.1",
-        //Useful when used along with Filename as Hashes option
-            cacheControl: function (url) {
-            // typically includes: .data, .bundle, .zpt
-            if (url.match(/\.data/) || url.match(/\.bundle/) || url.match(/\.zpt/)) {
-             return "immutable";
-}
-   
-            if (url.match(/\.mp4/) || url.match(/\.custom/) || url.match(/\.zbin/)) {
-                return "immutable";
-            }   
-            // Disable explicit caching for all other files.
-            // Note: the default browser cache may cache them anyway.
-            return "no-store";
-            },
-        };
-
-        const container = document.querySelector("#unity-container");
-        const canvas = document.querySelector("#unity-canvas");
-        const loadingCover = document.querySelector("#loading-cover");
-        const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
-        const progressBarFull = document.querySelector("#unity-progress-bar-full");
-        const spinner = document.querySelector('.spinner');
-
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-            container.className = "unity-mobile";
-            //config.matchWebGLToCanvasSize = false;    
-            //set devicePixelRatio=1; to avoid draining fillrate performance on mobile and override low DPI mode
-            config.devicePixelRatio = window.devicePixelRatio;
-        }
-        loadingCover.style.display = "";
-
-        window.zappar = ZCV.initialize();
-
-        const script = document.createElement("script");
-        script.src = loaderUrl;
-        //script.onload = () => { CreateUnityLoader();   };
-        document.body.appendChild(script);
-
-        window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
-
-        function WaitForZCVLoad() {
-            if (zappar.loaded()) {
-                CreateUnityLoader();
-                return;
-            }
-            setTimeout(WaitForZCVLoad, 500);
-        }
-
-        function CreateUnityLoader() {
-            createUnityInstance(canvas, config, (progress) => {
-                spinner.style.display = "none";
-                progressBarEmpty.style.display = "";
-                // progressBarFull.style.width = `${100 * progress}%`;
-            }).then((unityInstance) => {
-                loadingCover.style.display = "none";
-                window.uarGameInstance = unityInstance;
-            }).catch((message) => {
-                alert(message);
-            });
-        }
-
-    </script>
+  </div> -->
+  <script></script>
 </body>
 
 </html>
