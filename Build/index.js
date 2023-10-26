@@ -552,7 +552,9 @@ const onxrloaded = () => {
 
     // Open the camera and start running the camera run loop.
     XR8.run({ canvas: document.getElementById('camerafeed') })
-
+    setTimeout(() => {
+        XR8.pause();
+    },3000)
     setTimeout(() => {
         // const unityFrame = document.createElement('iframe');
         // unityFrame.src = 'https://192.168.26.32:7777'; // 将路径替换为正确的 Unity WebGL 项目路径
@@ -563,8 +565,6 @@ const onxrloaded = () => {
         // document.body.appendChild(unityFrame);
     }, 1000);
 }
-
-
 
 const load = () => { XRExtras.Loading.showLoading({ onxrloaded }) }
 window.onload = () => {

@@ -142,9 +142,9 @@
         const buildUrl = "Build";
         const loaderUrl = buildUrl + "/Mipmap.loader.js";
         const config = {
-            dataUrl: buildUrl + "/5b6af7de80153cd9456109ed4ff1cc58.data.unityweb",
-            frameworkUrl: buildUrl + "/e04d3d21d28f69c895a7cec6041f4a88.js.unityweb",
-            codeUrl: buildUrl + "/6a47f04d2327daae476332680a004174.wasm.unityweb",
+            dataUrl: buildUrl + "/900a3729df08c0ffa6448886327582d8.data.unityweb",
+            frameworkUrl: buildUrl + "/e45a1a4425bc7535146e678ea5ab126b.js.unityweb",
+            codeUrl: buildUrl + "/72dd440b263d19b78cf90f54af9e986e.wasm.unityweb",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
             productName: "ZapperARPro",
@@ -175,21 +175,21 @@
             //set devicePixelRatio=1; to avoid draining fillrate performance on mobile and override low DPI mode
             config.devicePixelRatio = window.devicePixelRatio;
         }
-        loadingCover.style.display = "";
-
-        window.zappar = ZCV.initialize();
 
         function JsToUnityTrigger(val) {
             console.log("val", val);
             window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', val);
         }
+        loadingCover.style.display = "";
+
+        window.zappar = ZCV.initialize();
 
         const script = document.createElement("script");
         script.src = loaderUrl;
         //script.onload = () => { CreateUnityLoader();   };
         document.body.appendChild(script);
 
-        // ZAPPAR_PERMISSIONS_IMPLEMENTATION
+        ZAPPAR_PERMISSIONS_IMPLEMENTATION
 
         function WaitForZCVLoad() {
             if (zappar.loaded()) {
@@ -207,7 +207,7 @@
             }).then((unityInstance) => {
                 loadingCover.style.display = "none";
                 window.uarGameInstance = unityInstance;
-                wx.miniProgram.postMessage({window:window,unityInstance:unityInstance});
+                wx.miniProgram.postMessage({ window: window, unityInstance: uarGameInstance });
             }).catch((message) => {
                 alert(message);
             });
