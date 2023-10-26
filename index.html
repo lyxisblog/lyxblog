@@ -23,10 +23,7 @@
         html,
         body {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
         }
 
         canvas {
@@ -142,23 +139,23 @@
         const buildUrl = "Build";
         const loaderUrl = buildUrl + "/Mipmap.loader.js";
         const config = {
-            dataUrl: buildUrl + "/900a3729df08c0ffa6448886327582d8.data.unityweb",
-            frameworkUrl: buildUrl + "/e45a1a4425bc7535146e678ea5ab126b.js.unityweb",
-            codeUrl: buildUrl + "/72dd440b263d19b78cf90f54af9e986e.wasm.unityweb",
+            dataUrl: buildUrl + "/5b6af7de80153cd9456109ed4ff1cc58.data.unityweb",
+            frameworkUrl: buildUrl + "/e04d3d21d28f69c895a7cec6041f4a88.js.unityweb",
+            codeUrl: buildUrl + "/6a47f04d2327daae476332680a004174.wasm.unityweb",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
             productName: "ZapperARPro",
             productVersion: "0.1",
-            //Useful when used along with Filename as Hashes option
+        //Useful when used along with Filename as Hashes option
             cacheControl: function (url) {
-                // typically includes: .data, .bundle, .zpt
-                ZAPPAR_WEBGL_CACHING
-                if (url.match(/\.mp4/) || url.match(/\.custom/) || url.match(/\.zbin/)) {
-                    return "immutable";
-                }
-                // Disable explicit caching for all other files.
-                // Note: the default browser cache may cache them anyway.
-                return "no-store";
+            // typically includes: .data, .bundle, .zpt
+            ZAPPAR_WEBGL_CACHING   
+            if (url.match(/\.mp4/) || url.match(/\.custom/) || url.match(/\.zbin/)) {
+                return "immutable";
+            }   
+            // Disable explicit caching for all other files.
+            // Note: the default browser cache may cache them anyway.
+            return "no-store";
             },
         };
 
@@ -174,11 +171,6 @@
             //config.matchWebGLToCanvasSize = false;    
             //set devicePixelRatio=1; to avoid draining fillrate performance on mobile and override low DPI mode
             config.devicePixelRatio = window.devicePixelRatio;
-        }
-
-        function JsToUnityTrigger(val) {
-            console.log("val", val);
-            window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', val);
         }
         loadingCover.style.display = "";
 
@@ -207,7 +199,6 @@
             }).then((unityInstance) => {
                 loadingCover.style.display = "none";
                 window.uarGameInstance = unityInstance;
-                wx.miniProgram.postMessage({ window: window, unityInstance: uarGameInstance });
             }).catch((message) => {
                 alert(message);
             });
