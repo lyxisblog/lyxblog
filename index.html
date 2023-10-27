@@ -75,6 +75,44 @@
       window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', val);
     }
 
+    // 获取位置信息
+    document.getElementById('getLocationButton').addEventListener('click', function () {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const locationInfo = document.getElementById('locationInfo');
+          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+          console.log("locationInfolocationInfolocationInfolocationInfolocationInfolocationInfolocationInfo", `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+        }, function (error) {
+          console.error('Error getting location:', error);
+        });
+      } else {
+        console.error('Geolocation is not supported in this browser.');
+      }
+    });
+
+    // 获取指南针信息
+    document.getElementById('getCompassButton').addEventListener('click', function () {
+      if ('ondeviceorientation' in window) {
+        window.addEventListener('deviceorientation', function (event) {
+          const compassInfo = document.getElementById('compassInfo');
+          compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+          // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify({
+          //   "compass": {
+          //     "accuracy": 0.1,
+          //     "direction": 0.1
+          //   },
+          //   "chooseLocation": {
+          //     "latitude": 0.1,
+          //     "longitude": 0.1
+          //   }
+          // }))
+          console.log("compassInfocompassInfocompassInfocompassInfocompassInfocompassInfocompassInfocompassInfo", `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`);
+        });
+      } else {
+        console.error('Device orientation events are not supported in this browser.');
+      }
+    });
+
     // By default Unity keeps WebGL canvas render target size matched with
     // the DOM size of the canvas element (scaled by window.devicePixelRatio)
     // Set this to false if you want to decouple this synchronization from
@@ -113,10 +151,7 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
-        window.unityInstance=unityInstance;
-        if(wx.miniProgram){
-          wx.miniProgram.postMessage({window:window,unityInstance:unityInstance});
-        }
+        window.unityInstance = unityInstance;
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
