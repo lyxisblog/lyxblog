@@ -116,6 +116,22 @@
       }).then((unityInstance) => {
         window.unityInstance = unityInstance;
         loadingBar.style.display = "none";
+        setInterval(() => {
+          if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+              const locationInfo = document.getElementById('locationInfo');
+              locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+              currentPosition.latitude = position.coords.latitude;
+              currentPosition.longitude = position.coords.longitude;
+              console.log("locationInfolocationInfolocationInfolocationInfolocationInfolocationInfolocationInfo", `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+            }, function (error) {
+              console.error('Error getting location:', error);
+            });
+          } else {
+            console.error('Geolocation is not supported in this browser.');
+          }
+        });
+        getGeolocation();
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
@@ -194,22 +210,7 @@
     });
 
 
-    setInterval(() => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          const locationInfo = document.getElementById('locationInfo');
-          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
-          currentPosition.latitude = position.coords.latitude;
-          currentPosition.longitude = position.coords.longitude;
-          console.log("locationInfolocationInfolocationInfolocationInfolocationInfolocationInfolocationInfo", `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
-        }, function (error) {
-          console.error('Error getting location:', error);
-        });
-      } else {
-        console.error('Geolocation is not supported in this browser.');
-      }
-    });
-    getGeolocation();
+
   </script>
 </body>
 
