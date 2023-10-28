@@ -1,119 +1,230 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | ARpath</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">ARpath</div>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Unity WebGL Player | WebGLInstantGame</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <style>
+    #backBtn_callback {
+      position: fixed;
+      top: 10px;
+      left: 48px;
+    }
+
+    #backBtn_callback img {
+      width: 32px;
+      height: 32px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="backBtn_callback" onclick="backBtnCallback()"><img src="./TemplateData/back.png" alt=""></div>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width=960 height=600 style="background: transparent"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
       </div>
     </div>
-    <script>
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var warningBanner = document.querySelector("#unity-warning");
+    <div id="unity-warning"> </div>
+    <div id="unity-footer">
+      <div id="unity-webgl-logo"></div>
+      <div id="unity-fullscreen-button"></div>
+      <div id="unity-build-title">WebGLInstantGame</div>
+    </div>
+  </div>
+  <p id="locationInfo"></p>
+  <p id="compassInfo"></p>
+  <script>
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+    var warningBanner = document.querySelector("#unity-warning");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+    // Shows a temporary message banner/ribbon for a few seconds, or
+    // a permanent error message on top of the canvas if type=='error'.
+    // If type=='warning', a yellow highlight color is used.
+    // Modify or remove this function to customize the visually presented
+    // way that non-critical warnings and error messages are presented to the
+    // user.
+    function unityShowBanner(msg, type) {
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
       }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/webGL.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/b44423d7cc308f21a98d5589e37d2484.data.unityweb",
-        frameworkUrl: buildUrl + "/d771f6063034d5d8ca6633b81e9bc2e2.js.unityweb",
-        codeUrl: buildUrl + "/ca57d0ef294d1f14c6b2cae6c4565b5e.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "ARpath",
-        productVersion: "0.1",
-        showBanner: unityShowBanner,
-      };
-
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        container.className = "unity-mobile";
-        canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-        unityShowBanner('WebGL builds are not supported on mobile devices.');
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function () {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
+        }, 5000);
       }
+      updateBannerVisibility();
+    }
 
-      loadingBar.style.display = "block";
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/WebGlTest.loader.js";
+    var config = {
+      dataUrl: buildUrl + "/WebGlTest.data.unityweb",
+      frameworkUrl: buildUrl + "/WebGlTest.framework.js.unityweb",
+      codeUrl: buildUrl + "/WebGlTest.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "WebGLInstantGame",
+      productVersion: "0.1.0",
+    };
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
+    // By default Unity keeps WebGL canvas render target size matched with
+    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+    // Set this to false if you want to decouple this synchronization from
+    // happening inside the engine, and you would instead like to size up
+    // the canvas DOM size and WebGL render target sizes yourself.
+    // config.matchWebGLToCanvasSize = false;
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      // Mobile device style: fill the whole browser client area with the game canvas:
+
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      container.className = "unity-mobile";
+
+      // To lower canvas resolution on mobile devices to gain some
+      // performance, uncomment the following line:
+      // config.devicePixelRatio = 1;
+
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    } else {
+      // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+
+      canvas.style.width = "960px";
+      canvas.style.height = "600px";
+    }
+
+    loadingBar.style.display = "block";
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        new window.VConsole();
+        getLocation();
+        getCompass();
+        setWxConfig().then(() => {
+          console.log();
+        })
+        window.unityInstance = unityInstance;
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+      }).catch((message) => {
+        alert(message);
+      });
+    }; document.body.appendChild(script);
+
+    function SyncCameraTransform(val) {
+      console.log("val", val);
+      window.unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', val);
+    }
+
+    function SyncARSpaceTransform(val) {
+      console.log("val", val);
+      window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', val);
+    }
+
+    function getLocation() {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const locationInfo = document.getElementById('locationInfo');
+          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+        }, function (error) {
+          console.error('Error getting location:', error);
         });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+      } else {
+        console.error('Geolocation is not supported in this browser.');
+      }
+    }
+
+    function getCompass() {
+      if ('ondeviceorientation' in window) {
+        window.addEventListener('deviceorientation', function (event) {
+          const compassInfo = document.getElementById('compassInfo');
+          compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+        });
+      } else {
+        console.error('Device orientation events are not supported in this browser.');
+      }
+    }
+
+    async function setWxConfig() {
+      console.log("window.location.href", window.location.href);
+      $.ajax({
+        type: "get",
+        url: `https://meta-gateway.shengydt.com/api/admin/wechat/config?url=${encodeURIComponent(location.href)}`,
+        processData: false,
+        error: function (data, status, error) {
+          alert(JSON.stringify(data.responseJSON));
+        },
+        success: function (data) {
+          if (data.code == 200) {
+            // code annotation
+            console.log("setWxConfig data", data, "setWxConfig nonceStr", data.data.nonceStr, "window.location", window.location);
+            wx.config({
+              debug: false,
+              appId: data.data.appId,
+              timestamp: data.data.timestamp,
+              nonceStr: data.data.nonceStr,
+              signature: data.data.signature,
+              jsApiList: data.data.jsApiList,
+            });
+
+            wx.checkJsApi({
+              jsApiList: [
+                // 必填，需要使用的JS接口列表"checkJsApi",
+                'onMenuShareTimeline',						//分享到微信朋友圈
+                'onMenuShareAppMessage',					//分享给微信朋友
+                'onMenuShareQQ',							//分享到QQ
+                'onMenuShareQZone',							//分享到QQ空间
+                "updateAppMessageShareData",  //分享到微信及QQ（新接口）
+                "updateTimelineShareData",    //分享到朋友圈”及“分享到QQ空间（新接口）
+                "downloadImage",
+                "scanQRCode"
+              ],
+              success: function (res) {
+                console.log("wx.checkJsApi", res);
+                // 以键值对的形式返回，可用的api值true，不可用为false
+                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+              }
+            });
+          }
+          else {
+            alert("Failed to capture")
+          }
+        }
+      })
+    }
+
+    function backBtnCallback() {
+      console.log("backBtnCallbackbackBtnCallbackbackBtnCallbackbackBtnCallback");
+    }
+  </script>
+</body>
+
 </html>
