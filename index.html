@@ -191,7 +191,7 @@
                     // event.gamma; // 左右倾斜角度
                     const compassInfo = document.getElementById('compassInfo');
                     compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-                  });
+                  },true);
                 } else {
                   console.error('Device orientation events are not supported in this browser.');
                 }
