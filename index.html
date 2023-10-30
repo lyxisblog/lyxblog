@@ -166,17 +166,30 @@
     }
 
     function getCompass() {
-      if ('ondeviceorientation' in window) {
-        window.addEventListener('deviceorientation', function (event) {
-          // event.alpha; // 指南针方向（0°-360°）
-          // event.beta;   // 前后倾斜角度
-          // event.gamma; // 左右倾斜角度
-          const compassInfo = document.getElementById('compassInfo');
-          compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-        });
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              if ('ondeviceorientation' in window) {
+                window.addEventListener('deviceorientation', function (event) {
+                  // event.alpha; // 指南针方向（0°-360°）
+                  // event.beta;   // 前后倾斜角度
+                  // event.gamma; // 左右倾斜角度
+                  const compassInfo = document.getElementById('compassInfo');
+                  compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+                });
+              } else {
+                console.error('Device orientation events are not supported in this browser.');
+              }
+            } else {
+              console.log('用户拒绝了陀螺仪访问权限');
+            }
+          })
+          .catch(console.error);
       } else {
-        console.error('Device orientation events are not supported in this browser.');
+        console.log('浏览器不支持请求权限');
       }
+
     }
 
     async function setWxConfig() {
