@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
   <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <script src="./Build/compass.js"></script>
   <style>
     #backBtn_callback {
       position: fixed;
@@ -128,8 +129,26 @@
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
         new window.VConsole();
-        getLocation();
-        getCompass();
+
+        Compass.watch(function (heading) {
+          $('.degrees').text(heading);
+          $('.compass').css('transform', 'rotate(' + (-heading) + 'deg)');
+        });
+
+        Compass.init(function (method) {
+          console.log('Compass heading by ' + method);
+          Compass.needGPS(function () {
+            $('.go-outside-message').show();          // Step 1: we need GPS signal
+          }).needMove(function () {
+            $('.go-outside-message').hide()
+            $('.move-and-hold-ahead-message').show(); // Step 2: user must go forward
+          }).init(function () {
+            $('.move-and-hold-ahead-message').hide(); // GPS hack is enabled
+          });
+        });
+
+        // getLocation();
+        // getCompass();
         // setWxConfig().then(() => {
         //   console.log();
         // })
@@ -166,31 +185,48 @@
     }
 
     function getCompass() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              if ('ondeviceorientation' in window) {
-                window.addEventListener('deviceorientation', function (event) {
-                  // event.alpha; // 指南针方向（0°-360°）
-                  // event.beta;   // 前后倾斜角度
-                  // event.gamma; // 左右倾斜角度
-                  const compassInfo = document.getElementById('compassInfo');
-                  compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-                });
+      var u = navigator.userAgent;
+      if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {//安卓手机 || //winphone手机
+        if ('ondeviceorientation' in window) {
+          window.addEventListener('deviceorientation', function (event) {
+            // event.alpha; // 指南针方向（0°-360°）
+            // event.beta;   // 前后倾斜角度
+            // event.gamma; // 左右倾斜角度
+            const compassInfo = document.getElementById('compassInfo');
+            compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+          });
+        } else {
+          console.error('Device orientation events are not supported in this browser.');
+        }
+      } else if (u.indexOf('iPhone') > -1) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                if ('ondeviceorientation' in window) {
+                  window.addEventListener('deviceorientation', function (event) {
+                    // event.alpha; // 指南针方向（0°-360°）
+                    // event.beta;   // 前后倾斜角度
+                    // event.gamma; // 左右倾斜角度
+                    const compassInfo = document.getElementById('compassInfo');
+                    compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+                  });
+                } else {
+                  console.error('Device orientation events are not supported in this browser.');
+                }
               } else {
-                console.error('Device orientation events are not supported in this browser.');
+                console.log('用户拒绝了陀螺仪访问权限');
               }
-            } else {
-              console.log('用户拒绝了陀螺仪访问权限');
-            }
-          })
-          .catch(console.error);
+            })
+            .catch(console.error);
+        } else {
+          console.log('浏览器不支持请求权限');
+        }
       } else {
-        console.log('浏览器不支持请求权限');
+        return 'noAndoIos'
       }
-
     }
+
 
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
