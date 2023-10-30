@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
   <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
-  <script src="./Build/compass.js"></script>
   <style>
     #backBtn_callback {
       position: fixed;
@@ -129,26 +128,8 @@
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
         new window.VConsole();
-
-        Compass.watch(function (heading) {
-          $('.degrees').text(heading);
-          $('.compass').css('transform', 'rotate(' + (-heading) + 'deg)');
-        });
-
-        Compass.init(function (method) {
-          console.log('Compass heading by ' + method);
-          Compass.needGPS(function () {
-            $('.go-outside-message').show();          // Step 1: we need GPS signal
-          }).needMove(function () {
-            $('.go-outside-message').hide()
-            $('.move-and-hold-ahead-message').show(); // Step 2: user must go forward
-          }).init(function () {
-            $('.move-and-hold-ahead-message').hide(); // GPS hack is enabled
-          });
-        });
-
-        // getLocation();
-        // getCompass();
+        getLocation();
+        getCompass();
         // setWxConfig().then(() => {
         //   console.log();
         // })
