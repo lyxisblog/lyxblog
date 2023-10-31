@@ -175,25 +175,20 @@
     function getCompass() {
       var u = navigator.userAgent;
       if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {//安卓手机 || //winphone手机
-        if (permissionState === 'granted') {
-          if ('ondeviceorientation' in window) {
-            window.addEventListener('deviceorientation', function (event) {
-              // event.alpha; // 指南针方向（0°-360°）
-              // event.beta;   // 前后倾斜角度
-              // event.gamma; // 左右倾斜角度
-              console.log("eventeventeventeventeventevent", event);
-              console.log("webkitCompassHeading", event.webkitCompassHeading);
-              console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
-              const compassInfo = document.getElementById('compassInfo');
-              compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-            });
+        if ('ondeviceorientation' in window) {
+          window.addEventListener('deviceorientation', function (event) {
+            // event.alpha; // 指南针方向（0°-360°）
+            // event.beta;   // 前后倾斜角度
+            // event.gamma; // 左右倾斜角度
+            console.log("eventeventeventeventeventevent", event);
+            console.log("webkitCompassHeading", event.webkitCompassHeading);
+            console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+            const compassInfo = document.getElementById('compassInfo');
+            compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+          });
 
-          } else {
-            console.error('Device orientation events are not supported in this browser.');
-          }
         } else {
-          console.log("用户未授权！！！！");
-          // 用户拒绝授权
+          console.error('Device orientation events are not supported in this browser.');
         }
       }
       else if (u.indexOf('iPhone') > -1) {
@@ -230,7 +225,7 @@
       }
     }
 
-    let mode='0';
+    let mode = '0';
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
       $.ajax({
