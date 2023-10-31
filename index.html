@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
   <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+
   <style>
     #backBtn_callback {
       position: fixed;
@@ -194,7 +195,7 @@
                     console.log("webkitCompassHeading", event.webkitCompassHeading);
                     console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
                     const compassInfo = document.getElementById('compassInfo');
-                    compassInfo.textContent = `Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+                    compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
                   }, true);
                 } else {
                   console.error('Device orientation events are not supported in this browser.');
