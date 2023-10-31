@@ -163,7 +163,7 @@
         navigator.geolocation.getCurrentPosition(function (position) {
           console.log("eventeventeventeventeventevent", position);
           const locationInfo = document.getElementById('locationInfo');
-          locationInfo.textContent = `heading：${position.coords.heading}, Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
+          locationInfo.textContent = `speed${position.coords.speed},heading：${position.coords.heading}, Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
           console.error('Error getting location:', error);
         });
@@ -225,7 +225,6 @@
       }
     }
 
-    let mode = '0';
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
       $.ajax({
@@ -292,13 +291,13 @@
             heading = event.alpha - 270;
             if (heading < 0) heading += 360;
           } else {
-            if (mode == '0') {
+            // if (mode == '0') {
               // 安卓浏览器的event.alpha直接可用，这样反应快点
-              heading = event.alpha;
-            } else {
+              // heading = event.alpha;
+            // } else {
               // 按照w3c标准规则计算compass heading
               heading = 360 - compassHeading(event.alpha, event.beta, event.gamma);
-            }
+            // }
             // TODO: 火狐始终减去180
             // heading -= 180;
           }
