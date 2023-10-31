@@ -22,6 +22,10 @@
       width: 32px;
       height: 32px;
     }
+
+    #unity-container {
+      background-color: yellow;
+    }
   </style>
 </head>
 
@@ -157,7 +161,7 @@
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(function (position) {
           const locationInfo = document.getElementById('locationInfo');
-          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
           console.error('Error getting location:', error);
         });
