@@ -133,7 +133,7 @@
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
         new window.VConsole();
-        0();
+        getLocation();
         // getCompass();
         getDev();
         // setWxConfig().then(() => {
@@ -163,7 +163,7 @@
         navigator.geolocation.getCurrentPosition(function (position) {
           console.log("eventeventeventeventeventevent", position);
           const locationInfo = document.getElementById('locationInfo');
-          locationInfo.textContent = `speed${position.coords.speed},heading：${position.coords.heading}, Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
+          locationInfo.textContent = `second:${position.coords.second},heading：${position.coords.heading}, Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
           console.error('Error getting location:', error);
         });
@@ -175,20 +175,25 @@
     function getCompass() {
       var u = navigator.userAgent;
       if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {//安卓手机 || //winphone手机
-        if ('ondeviceorientation' in window) {
-          window.addEventListener('deviceorientation', function (event) {
-            // event.alpha; // 指南针方向（0°-360°）
-            // event.beta;   // 前后倾斜角度
-            // event.gamma; // 左右倾斜角度
-            console.log("eventeventeventeventeventevent", event);
-            console.log("webkitCompassHeading", event.webkitCompassHeading);
-            console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
-            const compassInfo = document.getElementById('compassInfo');
-            compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-          });
+        if (permissionState === 'granted') {
+          if ('ondeviceorientation' in window) {
+            window.addEventListener('deviceorientation', function (event) {
+              // event.alpha; // 指南针方向（0°-360°）
+              // event.beta;   // 前后倾斜角度
+              // event.gamma; // 左右倾斜角度
+              console.log("eventeventeventeventeventevent", event);
+              console.log("webkitCompassHeading", event.webkitCompassHeading);
+              console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+              const compassInfo = document.getElementById('compassInfo');
+              compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+            });
 
+          } else {
+            console.error('Device orientation events are not supported in this browser.');
+          }
         } else {
-          console.error('Device orientation events are not supported in this browser.');
+          console.log("用户未授权！！！！");
+          // 用户拒绝授权
         }
       }
       else if (u.indexOf('iPhone') > -1) {
@@ -225,6 +230,7 @@
       }
     }
 
+    let mode=0;
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
       $.ajax({
@@ -291,13 +297,13 @@
             heading = event.alpha - 270;
             if (heading < 0) heading += 360;
           } else {
-            // if (mode == '0') {
+            if (mode === '0') {
               // 安卓浏览器的event.alpha直接可用，这样反应快点
-              // heading = event.alpha;
-            // } else {
+              heading = event.alpha;
+            } else {
               // 按照w3c标准规则计算compass heading
               heading = 360 - compassHeading(event.alpha, event.beta, event.gamma);
-            // }
+            }
             // TODO: 火狐始终减去180
             // heading -= 180;
           }
