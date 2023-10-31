@@ -292,7 +292,7 @@
             heading = event.alpha - 270;
             if (heading < 0) heading += 360;
           } else {
-            if (mode === '0') {
+            if (mode == '0') {
               // 安卓浏览器的event.alpha直接可用，这样反应快点
               heading = event.alpha;
             } else {
