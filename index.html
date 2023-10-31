@@ -185,6 +185,7 @@
         function deviceOrientationListener(event) {
 
             var alpha = event.webkitCompassHeading || event.alpha;
+            console.log("event.webkitCompassHeading || event.alpha", event.webkitCompassHeading, "event.alpha", event.alpha);
             alphaText.attr({
                 text: parseInt(alpha) + '°'
             });
@@ -232,8 +233,8 @@
                     // event.beta;   // 前后倾斜角度
                     // event.gamma; // 左右倾斜角度
                     // console.log("eventeventeventeventeventevent", event);
-                    console.log("webkitCompassHeading", event.webkitCompassHeading);
-                    console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+                    // console.log("webkitCompassHeading", event.webkitCompassHeading);
+                    // console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
                     window.addEventListener('deviceorientation', throttle(deviceOrientationListener, 10, 30))
                 });
             }
@@ -247,9 +248,9 @@
                                         // event.alpha; // 指南针方向（0°-360°）
                                         // event.beta;   // 前后倾斜角度
                                         // event.gamma; // 左右倾斜角度
-                                        console.log("eventeventeventeventeventevent", event);
-                                        console.log("webkitCompassHeading", event.webkitCompassHeading);
-                                        console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+                                        // console.log("eventeventeventeventeventevent", event);
+                                        // console.log("webkitCompassHeading", event.webkitCompassHeading);
+                                        // console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
                                         window.addEventListener('deviceorientation', throttle(deviceOrientationListener, 10, 30))
                                     }, true);
                                 } else {
