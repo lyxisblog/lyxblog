@@ -133,7 +133,7 @@
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
         new window.VConsole();
-        getLocation();
+        0();
         // getCompass();
         getDev();
         // setWxConfig().then(() => {
@@ -161,9 +161,9 @@
     function getLocation() {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(function (position) {
-          console.log("eventeventeventeventeventevent", event);
+          console.log("eventeventeventeventeventevent", position);
           const locationInfo = document.getElementById('locationInfo');
-          locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
+          locationInfo.textContent = `heading：${position.coords.heading}, Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
           console.error('Error getting location:', error);
         });
@@ -230,7 +230,7 @@
       }
     }
 
-
+    let mode='0';
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
       $.ajax({
