@@ -175,26 +175,18 @@
     function getCompass() {
       var u = navigator.userAgent;
       if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {//安卓手机 || //winphone手机
-        if (permissionState === 'granted') {
-          if ('ondeviceorientation' in window) {
-            window.addEventListener('deviceorientation', function (event) {
-              // event.alpha; // 指南针方向（0°-360°）
-              // event.beta;   // 前后倾斜角度
-              // event.gamma; // 左右倾斜角度
-              console.log("eventeventeventeventeventevent", event);
-              console.log("webkitCompassHeading", event.webkitCompassHeading);
-              console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
-              const compassInfo = document.getElementById('compassInfo');
-              compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-            });
 
-          } else {
-            console.error('Device orientation events are not supported in this browser.');
-          }
-        } else {
-          console.log("用户未授权！！！！");
-          // 用户拒绝授权
-        }
+        window.addEventListener('deviceorientation', function (event) {
+          // event.alpha; // 指南针方向（0°-360°）
+          // event.beta;   // 前后倾斜角度
+          // event.gamma; // 左右倾斜角度
+          // console.log("eventeventeventeventeventevent", event);
+          console.log("webkitCompassHeading", event.webkitCompassHeading);
+          console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+          const compassInfo = document.getElementById('compassInfo');
+          compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+          console.log("Math.round(360 - event.alpha)",Math.round(360 - event.alpha));
+        });
       }
       else if (u.indexOf('iPhone') > -1) {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -230,7 +222,7 @@
       }
     }
 
-    let mode=0;
+    let mode = 0;
     async function setWxConfig() {
       console.log("window.location.href", window.location.href);
       $.ajax({
@@ -282,73 +274,6 @@
     function backBtnCallback() {
       getCompass();
       console.log("backBtnCallbackbackBtnCallbackbackBtnCallbackbackBtnCallback");
-    }
-
-    function getDev() {
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', function (event) {
-          var heading;
-          // iOS设备直接使用webkitCompassHeading
-          if ('webkitCompassHeading' in event) {
-            // 因为实际是指北的，须要反转角度，下同
-            heading = 360 - event.webkitCompassHeading;
-          } else if (window.chrome) {
-            // chrome浏览器的event.alpha是错误的，计算出来的值也是错的，须要修正
-            heading = event.alpha - 270;
-            if (heading < 0) heading += 360;
-          } else {
-            if (mode === '0') {
-              // 安卓浏览器的event.alpha直接可用，这样反应快点
-              heading = event.alpha;
-            } else {
-              // 按照w3c标准规则计算compass heading
-              heading = 360 - compassHeading(event.alpha, event.beta, event.gamma);
-            }
-            // TODO: 火狐始终减去180
-            // heading -= 180;
-          }
-
-          console.log("heading", heading)
-
-        }, false);
-      } else {
-        console.log("你的浏览器不支持陀螺仪！");
-      }
-    }
-
-    function compassHeading(alpha, beta, gamma) {
-      // Convert degrees to radians
-      var alphaRad = alpha * (Math.PI / 180);
-      var betaRad = beta * (Math.PI / 180);
-      var gammaRad = gamma * (Math.PI / 180);
-
-      // Calculate equation components
-      var cA = Math.cos(alphaRad);
-      var sA = Math.sin(alphaRad);
-      var cB = Math.cos(betaRad);
-      var sB = Math.sin(betaRad);
-      var cG = Math.cos(gammaRad);
-      var sG = Math.sin(gammaRad);
-
-      // Calculate A, B, C rotation components
-      var rA = - cA * sG - sA * sB * cG;
-      var rB = - sA * sG + cA * sB * cG;
-      var rC = - cB * cG;
-
-      // Calculate compass heading
-      var compassHeading = Math.atan(rA / rB);
-
-      // Convert from half unit circle to whole unit circle
-      if (rB < 0) {
-        compassHeading += Math.PI;
-      } else if (rA < 0) {
-        compassHeading += 2 * Math.PI;
-      }
-
-      // Convert radians to degrees
-      compassHeading *= 180 / Math.PI;
-
-      return compassHeading;
     }
 
   </script>
