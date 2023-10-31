@@ -160,6 +160,7 @@
     function getLocation() {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(function (position) {
+          console.log("eventeventeventeventeventevent",event);
           const locationInfo = document.getElementById('locationInfo');
           locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
