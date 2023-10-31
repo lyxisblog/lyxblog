@@ -281,7 +281,7 @@
                 console.warn("DeviceOrientation API not available");
                 return;
             }
-            let absoluteListener = () => {
+            let absoluteListener = (e) => {
                 if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
                     return;
                 let compass = -(e.alpha + e.beta * e.gamma / 90);
