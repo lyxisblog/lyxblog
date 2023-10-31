@@ -160,7 +160,7 @@
     function getLocation() {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(function (position) {
-          console.log("eventeventeventeventeventevent",event);
+          console.log("eventeventeventeventeventevent", event);
           const locationInfo = document.getElementById('locationInfo');
           locationInfo.textContent = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}, Accuracy：${position.coords.accuracy}`;
         }, function (error) {
@@ -174,32 +174,40 @@
     function getCompass() {
       var u = navigator.userAgent;
       if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {//安卓手机 || //winphone手机
-        if ('ondeviceorientation' in window) {
 
-
-          window.addEventListener('deviceorientation', function (event) {
-            // event.alpha; // 指南针方向（0°-360°）
-            // event.beta;   // 前后倾斜角度
-            // event.gamma; // 左右倾斜角度
-            console.log("eventeventeventeventeventevent",event);
-            console.log("webkitCompassHeading", event.webkitCompassHeading);
-            console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
-            const compassInfo = document.getElementById('compassInfo');
-            compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
-          });
-
-
-        } else {
-          console.error('Device orientation events are not supported in this browser.');
-        }
-      } 
-      else if (u.indexOf('iPhone') > -1) 
-      {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
           DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
               if (permissionState === 'granted') {
+                if ('ondeviceorientation' in window) {
+                  window.addEventListener('deviceorientation', function (event) {
+                    // event.alpha; // 指南针方向（0°-360°）
+                    // event.beta;   // 前后倾斜角度
+                    // event.gamma; // 左右倾斜角度
+                    console.log("eventeventeventeventeventevent", event);
+                    console.log("webkitCompassHeading", event.webkitCompassHeading);
+                    console.log("webkitCompassAccuracy", event.webkitCompassAccuracy);
+                    const compassInfo = document.getElementById('compassInfo');
+                    compassInfo.textContent = `webkitCompassHeading：${event.webkitCompassHeading},webkitCompassAccuracy：${event.webkitCompassAccuracy}Alpha: ${event.alpha}, Beta: ${event.beta}, Gamma: ${event.gamma}`;
+                  });
 
+                } else {
+                  console.error('Device orientation events are not supported in this browser.');
+                }
+              } else {
+                console.log("用户未授权！！！！");
+                // 用户拒绝授权
+              }
+            })
+            .catch(console.error);
+        }
+
+      }
+      else if (u.indexOf('iPhone') > -1) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
                 if ('ondeviceorientation' in window) {
                   window.addEventListener('deviceorientation', function (event) {
                     // event.alpha; // 指南针方向（0°-360°）
