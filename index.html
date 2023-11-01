@@ -111,7 +111,7 @@
           }
         })
       } else if (u.indexOf('iPhone') > -1) {
-        mui.prompt(`"${window.location.href}"想要访问运动与方向`, '', '', ['取消', '运行'], (res) => {
+        mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
           console.log("IOS mui", res);
         }, 'div')
         document.querySelector('.mui-popup-input input').type = 'password'
