@@ -231,14 +231,14 @@
                 if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
                     startCompassListener((compass, beta) => {
                         if (compass) {
-                            console.log("startCompassListener", compass, beta);
+                            // console.log("startCompassListener", compass, beta);
                             compassAndLocation.compass.accuracy = beta;
                             compassAndLocation.compass.direction = compass;
                         }
                     })
                     startWatchPosition(position => {
                         if (position) {
-                            console.log("startWatchPosition", position);
+                            // console.log("startWatchPosition", position);
                             compassAndLocation.chooseLocation.latitude = position.coords.latitude;
                             compassAndLocation.chooseLocation.longitude = position.coords.longitude
                         }
@@ -249,7 +249,7 @@
                         console.log("IOS mui", res);
                         startCompassListener((compass, beta) => {
                             if (compass) {
-                                console.log("IOS startCompassListener", compass, beta);
+                                // console.log("IOS startCompassListener", compass, beta);
                                 compassAndLocation.compass.accuracy = beta;
                                 compassAndLocation.compass.direction = compass;
                             }
@@ -261,7 +261,7 @@
                                 let altitude = position.coords.altitude; // 高度
                                 let speed = position.coords.speed; // 速度
                                 let heading = position.coords.heading; // 方向
-                                console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+                                // console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
                                 compassAndLocation.chooseLocation.latitude = position.coords.latitude;
                                 compassAndLocation.chooseLocation.longitude = position.coords.longitude
                             }
@@ -274,6 +274,7 @@
 
                 setInterval(() => {
                     if (useCan) {
+                        console.log("compassAndLocation",compassAndLocation);
                         unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
                     }
                 }, 1000);
