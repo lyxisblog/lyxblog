@@ -134,10 +134,13 @@
     function getCompassAndLocation() {
       startCompassListener(({ compass, beta }) => {
         // 获取位置信息
+        let getCompassAndLocationSetInterval = null;
+        let compassAndLocation = null;
         if ('geolocation' in navigator) {
           navigator.geolocation.getCurrentPosition(function (position) {
-            console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
-            let compassAndLocation = {
+            // console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+            clearInterval(getCompassAndLocationSetInterval);
+            compassAndLocation = {
               "compass": {
                 "accuracy": beta,
                 "direction": compass
@@ -147,11 +150,13 @@
                 "longitude": position.coords.longitude
               }
             }
-            setInterval(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation)), 500);
+            getCompassAndLocationSetInterval = setInterval(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation)), 500);
           }, function (error) {
+            clearInterval(getCompassAndLocationSetInterval);
             console.error('Error getting location:', error);
           });
         } else {
+          clearInterval(getCompassAndLocationSetInterval);
           console.error('Geolocation is not supported in this browser.');
         }
         console.log("compass", compass);
