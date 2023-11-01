@@ -120,7 +120,7 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         window.unityInstance = unityInstance;
-        getCompassAndLocation();
+        getCompassAndLocation(unityInstance);
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
@@ -130,12 +130,11 @@
       });
     };
     document.body.appendChild(script);
-    
+
     let compassAndLocation = null;
-    function getCompassAndLocation() {
+    function getCompassAndLocation(unityInstance) {
       startCompassListener(({ compass, beta }) => {
         // 获取位置信息
-
         if ('geolocation' in navigator) {
           navigator.geolocation.getCurrentPosition(function (position) {
             // console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
@@ -149,7 +148,6 @@
                 "longitude": position.coords.longitude
               }
             }
-
           }, function (error) {
             console.error('Error getting location:', error);
           });
@@ -158,7 +156,7 @@
         }
         // console.log("compass", compass);
       })
-      setInterval(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000));
+      setInterval(() => unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000));
     }
 
     function startCompassListener(callback) {
