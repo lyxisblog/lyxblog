@@ -115,12 +115,16 @@
     new window.VConsole();
     var script = document.createElement("script");
     script.src = loaderUrl;
+    let compassAndLocation = null;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         window.unityInstance = unityInstance;
         getCompassAndLocation(unityInstance);
+        setInterval(() => {
+          unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+        }, 1000);
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
@@ -131,7 +135,7 @@
     };
     document.body.appendChild(script);
 
-    let compassAndLocation = null;
+
     function getCompassAndLocation(unityInstance) {
       startCompassListener(({ compass, beta }) => {
         // 获取位置信息
@@ -148,10 +152,6 @@
                 "longitude": position.coords.longitude
               }
             }
-            setTimeout(() => {
-              unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
-              canUse = false;
-            }, 1000);
           }, function (error) {
             console.error('Error getting location:', error);
           });
