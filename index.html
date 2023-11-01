@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
+    integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
+    integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>
     .open {
       width: 100px;
@@ -105,7 +111,10 @@
           }
         })
       } else if (u.indexOf('iPhone') > -1) {
-
+        mui.prompt(`"${window.location.href}"想要访问运动与方向`, '', '', ['取消', '运行'], (res) => {
+          console.log("IOS mui", res);
+        }, 'div')
+        document.querySelector('.mui-popup-input input').type = 'password'
       } else {
         return 'noAndoIos'
       }
