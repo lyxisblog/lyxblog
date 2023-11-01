@@ -19,6 +19,7 @@
         <div id="unity-progress-bar-full"></div>
       </div>
     </div>
+    <button onclick="getCompassAndLocation()">授权并获取</button>
     <div id="unity-warning"> </div>
     <div id="unity-footer">
       <div id="unity-webgl-logo"></div>
@@ -101,7 +102,7 @@
     }
 
     loadingBar.style.display = "block";
-
+    new window.VConsole();
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
@@ -109,30 +110,7 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         window.unityInstance = unityInstance;
-        startCompassListener(({ compass, beta }) => {
-          // 获取位置信息
-          if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-              console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
-              window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.parse({
-                "compass": {
-                  "accuracy": beta,
-                  "direction": compass
-                },
-                "chooseLocation": {
-                  "latitude": position.coords.latitude,
-                  "longitude": position.coords.longitude
-                }
-              }));
-            }, function (error) {
-              console.error('Error getting location:', error);
-            });
-          } else {
-            console.error('Geolocation is not supported in this browser.');
-          }
-
-          console.log("compass", compass);
-        })
+        getCompassAndLocation();
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
@@ -143,7 +121,32 @@
     };
     document.body.appendChild(script);
 
-    new window.VConsole();
+    function getCompassAndLocation() {
+      startCompassListener(({ compass, beta }) => {
+        // 获取位置信息
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+            let compassAndLocation = {
+              "compass": {
+                "accuracy": beta,
+                "direction": compass
+              },
+              "chooseLocation": {
+                "latitude": position.coords.latitude,
+                "longitude": position.coords.longitude
+              }
+            }
+            window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+          }, function (error) {
+            console.error('Error getting location:', error);
+          });
+        } else {
+          console.error('Geolocation is not supported in this browser.');
+        }
+        console.log("compass", compass);
+      })
+    }
 
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
