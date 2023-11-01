@@ -116,15 +116,18 @@
     var script = document.createElement("script");
     script.src = loaderUrl;
     let compassAndLocation = null;
+    let useCan = false;
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         window.unityInstance = unityInstance;
         getCompassAndLocation(unityInstance);
-        setInterval(() => {
-          unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
-        }, 1000);
+        if (useCan) {
+          setInterval(() => {
+            unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+          }, 1000);
+        }
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
@@ -138,6 +141,7 @@
 
     function getCompassAndLocation(unityInstance) {
       startCompassListener(({ compass, beta }) => {
+        useCan = true;
         // 获取位置信息
         if ('geolocation' in navigator) {
           navigator.geolocation.getCurrentPosition(function (position) {
