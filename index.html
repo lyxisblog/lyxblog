@@ -206,12 +206,14 @@
 
         let compassAndLocation = {
             compass: {
-                accuracy: "",
+                beta: "",
                 direction: "",
+
             },
             chooseLocation: {
                 latitude: "",
-                longitude: ""
+                longitude: "",
+                accuracy: ""
             }
         };
         let useCan = false;
@@ -229,10 +231,10 @@
                 new window.VConsole();
                 var u = navigator.userAgent;
                 if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-                    startCompassListener(({compass, beta}) => {
+                    startCompassListener(({ compass, beta }) => {
                         if (compass) {
                             // console.log("startCompassListener", compass, beta);
-                            compassAndLocation.compass.accuracy = beta;
+                            compassAndLocation.compass.beta = beta;
                             compassAndLocation.compass.direction = compass;
                         }
                     })
@@ -240,17 +242,18 @@
                         if (position) {
                             // console.log("startWatchPosition", position);
                             compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                            compassAndLocation.chooseLocation.longitude = position.coords.longitude
+                            compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                            compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                         }
                     })
                     useCan = true;
                 } else if (u.indexOf('iPhone') > -1) {
                     mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
                         console.log("IOS mui", res);
-                        startCompassListener(({compass, beta}) => {
+                        startCompassListener(({ compass, beta }) => {
                             if (compass) {
                                 // console.log("IOS startCompassListener", compass, beta);
-                                compassAndLocation.compass.accuracy = beta;
+                                compassAndLocation.compass.beta = beta;
                                 compassAndLocation.compass.direction = compass;
                             }
                         })
@@ -263,7 +266,8 @@
                                 let heading = position.coords.heading; // 方向
                                 // console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
                                 compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                                compassAndLocation.chooseLocation.longitude = position.coords.longitude
+                                compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                                compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                             }
                         });
                         useCan = true;
@@ -274,7 +278,7 @@
 
                 setInterval(() => {
                     if (useCan) {
-                        console.log("compassAndLocation",compassAndLocation);
+                        console.log("compassAndLocation", compassAndLocation);
                         unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
                     }
                 }, 1000);
