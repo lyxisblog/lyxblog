@@ -133,6 +133,7 @@
 
     let compassAndLocation = null;
     function getCompassAndLocation(unityInstance) {
+      let canUse = true;
       startCompassListener(({ compass, beta }) => {
         // 获取位置信息
         if ('geolocation' in navigator) {
@@ -148,6 +149,13 @@
                 "longitude": position.coords.longitude
               }
             }
+            canUse = false;
+            if (canUse) {
+              setTimeout(() => {
+                unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+                canUse = true;
+              }, 1000);
+            }
           }, function (error) {
             console.error('Error getting location:', error);
           });
@@ -156,8 +164,6 @@
         }
         // console.log("compass", compass);
       })
-      console.log("unityInstanceunityInstanceunityInstanceunityInstance",unityInstance,window.unityInstance)
-      // setTimeout(()=>setInterval(() => unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000)),2000)
     }
 
     function startCompassListener(callback) {
