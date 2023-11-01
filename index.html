@@ -229,11 +229,11 @@
                 new window.VConsole();
                 var u = navigator.userAgent;
                 if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-                    startCompassListener(res => {
-                        if (res) {
-                            console.log("startCompassListener", res);
-                            compassAndLocation.compass.accuracy = res.beta;
-                            compassAndLocation.compass.direction = res.compass;
+                    startCompassListener((compass, beta) => {
+                        if (compass) {
+                            console.log("startCompassListener", compass, beta);
+                            compassAndLocation.compass.accuracy = beta;
+                            compassAndLocation.compass.direction = compass;
                         }
                     })
                     startWatchPosition(position => {
@@ -247,11 +247,11 @@
                 } else if (u.indexOf('iPhone') > -1) {
                     mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
                         console.log("IOS mui", res);
-                        startCompassListener(res => {
-                            if (res) {
-                                console.log("IOS startCompassListener", res);
-                                compassAndLocation.compass.accuracy = res.beta;
-                                compassAndLocation.compass.direction = res.compass;
+                        startCompassListener((compass, beta) => {
+                            if (compass) {
+                                console.log("IOS startCompassListener", compass, beta);
+                                compassAndLocation.compass.accuracy = beta;
+                                compassAndLocation.compass.direction = compass;
                             }
                         })
                         startWatchPosition(position => {
@@ -293,12 +293,12 @@
                 let compass = -(e.alpha + e.beta * e.gamma / 90);
                 compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
                 window.removeEventListener("deviceorientation", webkitListener);
-                callback(compass);
+                callback({ compass, beta: e.beta });
             };
             let webkitListener = (e) => {
                 let compass = e.webkitCompassHeading;
                 if (compass != null && !isNaN(compass)) {
-                    callback(compass);
+                    callback({ compass, beta: e.beta });
                     window.removeEventListener("deviceorientationabsolute", absoluteListener);
                 }
             }
