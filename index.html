@@ -104,7 +104,7 @@
               console.log("IOS startCompassListener", res);
             }
           })
-          startWatchPosition(res => {
+          startWatchPosition(position => {
             if (position) {
               let latitude = position.coords.latitude; // 纬度
               let longitude = position.coords.longitude; // 经度
