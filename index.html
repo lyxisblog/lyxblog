@@ -149,7 +149,7 @@
               }
             }
             // debounce(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
-            setTimeout(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000))
+            throttle(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000))
           }, function (error) {
             console.error('Error getting location:', error);
           });
@@ -161,15 +161,18 @@
       })
     }
 
-    function debounce(func, delay) {
-      let timer;
+    function throttle(func, delay) {
+      let canRun = true;
       return function () {
-        const context = this;
-        const args = arguments;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
+        if (canRun) {
+          const context = this;
+          const args = arguments;
           func.apply(context, args);
-        }, delay);
+          canRun = false;
+          setTimeout(function () {
+            canRun = true;
+          }, delay);
+        }
       };
     }
 
