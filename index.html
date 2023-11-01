@@ -111,27 +111,25 @@
         window.unityInstance = unityInstance;
         startCompassListener(({ compass, beta }) => {
           // 获取位置信息
-          document.getElementById('getLocationButton').addEventListener('click', function () {
-            if ('geolocation' in navigator) {
-              navigator.geolocation.getCurrentPosition(function (position) {
-                console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
-                window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.parse({
-                  "compass": {
-                    "accuracy": beta,
-                    "direction": compass
-                  },
-                  "chooseLocation": {
-                    "latitude": position.coords.latitude,
-                    "longitude": position.coords.longitude
-                  }
-                }));
-              }, function (error) {
-                console.error('Error getting location:', error);
-              });
-            } else {
-              console.error('Geolocation is not supported in this browser.');
-            }
-          });
+          if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+              console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+              window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.parse({
+                "compass": {
+                  "accuracy": beta,
+                  "direction": compass
+                },
+                "chooseLocation": {
+                  "latitude": position.coords.latitude,
+                  "longitude": position.coords.longitude
+                }
+              }));
+            }, function (error) {
+              console.error('Error getting location:', error);
+            });
+          } else {
+            console.error('Geolocation is not supported in this browser.');
+          }
 
           console.log("compass", compass);
         })
