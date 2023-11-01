@@ -156,7 +156,7 @@
         }
         // console.log("compass", compass);
       })
-      setInterval(() => unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000));
+      setTimeout(()=>setInterval(() => unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000)),2000)
     }
 
     function startCompassListener(callback) {
