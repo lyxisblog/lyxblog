@@ -138,7 +138,6 @@
         if ('geolocation' in navigator) {
           navigator.geolocation.getCurrentPosition(function (position) {
             // console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
-            clearInterval(getCompassAndLocationSetInterval);
             compassAndLocation = {
               "compass": {
                 "accuracy": beta,
@@ -149,16 +148,16 @@
                 "longitude": position.coords.longitude
               }
             }
-            debounce(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
+            // debounce(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
+            setTimeout(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
           }, function (error) {
-            clearInterval(getCompassAndLocationSetInterval);
             console.error('Error getting location:', error);
           });
         } else {
           clearInterval(getCompassAndLocationSetInterval);
           console.error('Geolocation is not supported in this browser.');
         }
-        console.log("compass", compass);
+        // console.log("compass", compass);
       })
     }
 
