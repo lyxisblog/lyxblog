@@ -149,7 +149,7 @@
               }
             }
             // debounce(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
-            setTimeout(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 500))
+            setTimeout(() => window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation), 1000))
           }, function (error) {
             console.error('Error getting location:', error);
           });
