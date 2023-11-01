@@ -1,125 +1,347 @@
+<!-- Zappar WebGL template for Unity 2020 and above versions -->
+<!-- NFYNT -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-us">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
-    integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
-    integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <style>
-    .open {
-      width: 100px;
-      height: 100px;
-    }
-  </style>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>ZapperARPro</title>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
+        integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
+        integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        html,
+        body {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        #unity-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+
+            background: #000000;
+        }
+
+        #loading-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #unity-loading-bar {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #unity-progress-bar-empty {
+            width: 80%;
+            height: 24px;
+            margin: 10px 20px 20px 10px;
+            text-align: left;
+            border: 1px solid white;
+            padding: 2px;
+        }
+
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 100%;
+            background: white;
+        }
+
+        .light #unity-progress-bar-empty {
+            border-color: black;
+        }
+
+        .light #unity-progress-bar-full {
+            background: black;
+        }
+
+        .spinner,
+        .spinner:after {
+            border-radius: 50%;
+            width: 5em;
+            height: 5em;
+        }
+
+        .spinner {
+            margin: 10px;
+            font-size: 10px;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+            border-left: 1.1em solid #ffffff;
+            transform: translateZ(0);
+            animation: spinner-spin 1.1s infinite linear;
+        }
+
+        @keyframes spinner-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
-<body>
-  <script>
+<body class="dark">
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+        <div id="unity-loading-bar">
+            <div id="unity-progress-bar-empty" style="display: none;">
+                <div id="unity-progress-bar-full"></div>
+            </div>
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.7/zappar-cv.js"></script>
+    <script>
+        var db = indexedDB.open("dummy_indexdb", 1); // iOS 14.6 fix; the call to open indexdb hangs forever otherwise
 
-    function startCompassListener(callback) {
-      if (!window["DeviceOrientationEvent"]) {
-        console.warn("DeviceOrientation API not available");
-        return;
-      }
-      let absoluteListener = (e) => {
-        if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
-          return;
-        let compass = -(e.alpha + e.beta * e.gamma / 90);
-        compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
-        window.removeEventListener("deviceorientation", webkitListener);
-        callback(compass);
-      };
-      let webkitListener = (e) => {
-        let compass = e.webkitCompassHeading;
-        if (compass != null && !isNaN(compass)) {
-          callback(compass);
-          window.removeEventListener("deviceorientationabsolute", absoluteListener);
+        const buildUrl = "Build";
+        const loaderUrl = buildUrl + "/webTest.loader.js";
+        const config = {
+            dataUrl: buildUrl + "/4e267f334659d4d782e21803f786850b.data.unityweb",
+            frameworkUrl: buildUrl + "/3783495e9be3bd834571c5eae6ba333e.js.unityweb",
+            codeUrl: buildUrl + "/e334ec3b2178829647cf9526b9153ca0.wasm.unityweb",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "ZapperARPro",
+            productVersion: "0.1",
+            //Useful when used along with Filename as Hashes option
+            cacheControl: function (url) {
+                // typically includes: .data, .bundle, .zpt
+                if (url.match(/\.data/) || url.match(/\.bundle/) || url.match(/\.zpt/)) {
+                    return "immutable";
+                }
+
+                if (url.match(/\.mp4/) || url.match(/\.custom/) || url.match(/\.zbin/)) {
+                    return "immutable";
+                }
+                // Disable explicit caching for all other files.
+                // Note: the default browser cache may cache them anyway.
+                return "no-store";
+            },
+        };
+
+        const container = document.querySelector("#unity-container");
+        const canvas = document.querySelector("#unity-canvas");
+        const loadingCover = document.querySelector("#loading-cover");
+        const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+        const progressBarFull = document.querySelector("#unity-progress-bar-full");
+        const spinner = document.querySelector('.spinner');
+
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            container.className = "unity-mobile";
+            //config.matchWebGLToCanvasSize = false;    
+            //set devicePixelRatio=1; to avoid draining fillrate performance on mobile and override low DPI mode
+            config.devicePixelRatio = window.devicePixelRatio;
         }
-      }
+        loadingCover.style.display = "";
 
-      function addListeners() {
-        window.addEventListener("deviceorientationabsolute", absoluteListener);
-        window.addEventListener("deviceorientation", webkitListener);
-      }
+        window.zappar = ZCV.initialize();
 
-      if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
-        DeviceOrientationEvent["requestPermission"]()
-          .then(response => {
-            if (response == "granted") {
-              addListeners();
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        //script.onload = () => { CreateUnityLoader();   };
+        document.body.appendChild(script);
+
+        window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
+
+        function WaitForZCVLoad() {
+            if (zappar.loaded()) {
+                CreateUnityLoader();
+                return;
+            }
+            setTimeout(WaitForZCVLoad, 500);
+        }
+
+        let compassAndLocation = {
+            compass: {
+                accuracy: "",
+                direction: "",
+            },
+            chooseLocation: {
+                latitude: "",
+                longitude: ""
+            }
+        };
+        let useCan = false;
+
+        function CreateUnityLoader() {
+            createUnityInstance(canvas, config, (progress) => {
+                spinner.style.display = "none";
+                progressBarEmpty.style.display = "";
+                progressBarFull.style.width = `${100 * progress}%`;
+            }).then((unityInstance) => {
+                loadingCover.style.display = "none";
+                window.unityInstance = unityInstance;
+
+
+                new window.VConsole();
+                var u = navigator.userAgent;
+                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
+                    startCompassListener(res => {
+                        if (res) {
+                            console.log("startCompassListener", res);
+                            compassAndLocation.compass.accuracy = res.beta;
+                            compassAndLocation.compass.direction = res.compass;
+                        }
+                    })
+                    startWatchPosition(position => {
+                        if (position) {
+                            console.log("startWatchPosition", position);
+                            compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                            compassAndLocation.chooseLocation.longitude = position.coords.longitude
+                        }
+                    })
+                    useCan = true;
+                } else if (u.indexOf('iPhone') > -1) {
+                    mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+                        console.log("IOS mui", res);
+                        startCompassListener(res => {
+                            if (res) {
+                                console.log("IOS startCompassListener", res);
+                                compassAndLocation.compass.accuracy = res.beta;
+                                compassAndLocation.compass.direction = res.compass;
+                            }
+                        })
+                        startWatchPosition(position => {
+                            if (position) {
+                                let latitude = position.coords.latitude; // 纬度
+                                let longitude = position.coords.longitude; // 经度
+                                let altitude = position.coords.altitude; // 高度
+                                let speed = position.coords.speed; // 速度
+                                let heading = position.coords.heading; // 方向
+                                console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+                                compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                                compassAndLocation.chooseLocation.longitude = position.coords.longitude
+                            }
+                        });
+                        useCan = true;
+                    }, 'div')
+                } else {
+                    return 'noAndoIos'
+                }
+
+                setInterval(() => {
+                    if (useCan) {
+                        unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+                    }
+                }, 1000);
+            }).catch((message) => {
+                alert(message);
+            });
+        }
+
+        function startCompassListener(callback) {
+            if (!window["DeviceOrientationEvent"]) {
+                console.warn("DeviceOrientation API not available");
+                return;
+            }
+            let absoluteListener = (e) => {
+                if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
+                    return;
+                let compass = -(e.alpha + e.beta * e.gamma / 90);
+                compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
+                window.removeEventListener("deviceorientation", webkitListener);
+                callback(compass);
+            };
+            let webkitListener = (e) => {
+                let compass = e.webkitCompassHeading;
+                if (compass != null && !isNaN(compass)) {
+                    callback(compass);
+                    window.removeEventListener("deviceorientationabsolute", absoluteListener);
+                }
+            }
+
+            function addListeners() {
+                window.addEventListener("deviceorientationabsolute", absoluteListener);
+                window.addEventListener("deviceorientation", webkitListener);
+            }
+
+            if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
+                DeviceOrientationEvent["requestPermission"]()
+                    .then(response => {
+                        if (response == "granted") {
+                            addListeners();
+                        } else
+                            console.warn("Permission for DeviceMotionEvent not granted");
+                    });
             } else
-              console.warn("Permission for DeviceMotionEvent not granted");
-          });
-      } else
-        addListeners();
-    }
+                addListeners();
+        }
 
-    function startWatchPosition(callback) {
-      if ("geolocation" in navigator) {
-        // 支持Geolocation
-        navigator.geolocation.watchPosition(function (position) {
-          // 成功获取位置信息
-          const latitude = position.coords.latitude; // 纬度
-          const longitude = position.coords.longitude; // 经度
-          const altitude = position.coords.altitude; // 高度
-          const speed = position.coords.speed; // 速度
-          const heading = position.coords.heading; // 方向
-          callback(position)
-        }, function (error) {
-          // 获取位置信息失败
-          console.error("获取位置信息失败：" + error.message);
-        });
-      } else {
-        // 不支持Geolocation
-        console.error("浏览器不支持Geolocation API");
-      }
-    }
+        function startWatchPosition(callback) {
+            if ("geolocation" in navigator) {
+                // 支持Geolocation
+                navigator.geolocation.watchPosition(function (position) {
+                    // 成功获取位置信息
+                    const latitude = position.coords.latitude; // 纬度
+                    const longitude = position.coords.longitude; // 经度
+                    const altitude = position.coords.altitude; // 高度
+                    const speed = position.coords.speed; // 速度
+                    const heading = position.coords.heading; // 方向
+                    callback(position)
+                }, function (error) {
+                    // 获取位置信息失败
+                    console.error("获取位置信息失败：" + error.message);
+                });
+            } else {
+                // 不支持Geolocation
+                console.error("浏览器不支持Geolocation API");
+            }
+        }
 
-    window.onload = () => {
-      new window.VConsole();
-      var u = navigator.userAgent;
-      if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-        startCompassListener(res => {
-          if (res) {
-            console.log("startCompassListener", res);
-          }
-        })
-        startWatchPosition(res => {
-          if (res) {
-            console.log("startWatchPosition", res);
-          }
-        })
-      } else if (u.indexOf('iPhone') > -1) {
-        mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
-          console.log("IOS mui", res);
-          startCompassListener(res => {
-            if (res) {
-              console.log("IOS startCompassListener", res);
-            }
-          })
-          startWatchPosition(position => {
-            if (position) {
-              let latitude = position.coords.latitude; // 纬度
-              let longitude = position.coords.longitude; // 经度
-              let altitude = position.coords.altitude; // 高度
-              let speed = position.coords.speed; // 速度
-              let heading = position.coords.heading; // 方向
-              console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
-            }
-          })
-        }, 'div')
-      } else {
-        return 'noAndoIos'
-      }
-    }
-  </script>
+    </script>
 </body>
 
 </html>
