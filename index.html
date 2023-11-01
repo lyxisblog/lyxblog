@@ -21,7 +21,6 @@
 </head>
 
 <body>
-  <button class="open" id="open" onclick="startCompassListener(asd),startWatchPosition(asdf)">授权并获取</button>
   <script>
 
     function startCompassListener(callback) {
@@ -83,19 +82,6 @@
       }
     }
 
-    function asd(res) {
-      console.log("IOS startCompassListener", res);
-    }
-
-    function asdf(position) {
-      let latitude = position.coords.latitude; // 纬度
-      let longitude = position.coords.longitude; // 经度
-      let altitude = position.coords.altitude; // 高度
-      let speed = position.coords.speed; // 速度
-      let heading = position.coords.heading; // 方向
-      console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
-    }
-
     window.onload = () => {
       new window.VConsole();
       var u = navigator.userAgent;
@@ -113,8 +99,22 @@
       } else if (u.indexOf('iPhone') > -1) {
         mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
           console.log("IOS mui", res);
+          startCompassListener(res => {
+            if (res) {
+              console.log("IOS startCompassListener", res);
+            }
+          })
+          startWatchPosition(res => {
+            if (position) {
+              let latitude = position.coords.latitude; // 纬度
+              let longitude = position.coords.longitude; // 经度
+              let altitude = position.coords.altitude; // 高度
+              let speed = position.coords.speed; // 速度
+              let heading = position.coords.heading; // 方向
+              console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+            }
+          })
         }, 'div')
-        document.querySelector('.mui-popup-input input').type = 'password'
       } else {
         return 'noAndoIos'
       }
