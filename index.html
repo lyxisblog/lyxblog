@@ -8,9 +8,19 @@
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <style>
+    #getCompassAndLocation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6.25rem;
+      height: 6.25rem;
+    }
+  </style>
 </head>
 
 <body>
+  <button id="getCompassAndLocation" onclick="getCompassAndLocation()">授权并获取</button>
   <div id="unity-container" class="unity-desktop">
     <canvas id="unity-canvas" width=375 height=812></canvas>
     <div id="unity-loading-bar">
@@ -19,7 +29,6 @@
         <div id="unity-progress-bar-full"></div>
       </div>
     </div>
-    <button onclick="getCompassAndLocation()">授权并获取</button>
     <div id="unity-warning"> </div>
     <div id="unity-footer">
       <div id="unity-webgl-logo"></div>
@@ -93,7 +102,7 @@
       // performance, uncomment the following line:
       // config.devicePixelRatio = 1;
 
-      unityShowBanner('WebGL builds are not supported on mobile devices.');
+      // unityShowBanner('WebGL builds are not supported on mobile devices.');
     } else {
       // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
@@ -137,7 +146,7 @@
                 "longitude": position.coords.longitude
               }
             }
-            window.uarGameInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+            window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
           }, function (error) {
             console.error('Error getting location:', error);
           });
