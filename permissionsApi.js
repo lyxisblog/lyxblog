@@ -51,7 +51,7 @@
         }
 
         loadNeedJsOrCSS() {
-            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName, _useCan } = this;
+            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName } = this;
             for (const { src, type } of loadJSOrCSS) {
                 let result = _checkLoadType({ src, type });
                 scriptOrCSSTree.push(result)
@@ -61,8 +61,8 @@
                         await _execute(this).then(_ => {
                             console.log("window.unityInstance", window.unityInstance);
                             setInterval(() => {
-                                console.log(_useCan, window.unityInstance);
-                                if (_useCan && window.unityInstance) {
+                                console.log(this._useCan, window.unityInstance);
+                                if (this._useCan && window.unityInstance) {
                                     console.log("compassAndLocation", compassAndLocation);
                                     window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
                                 }
@@ -74,13 +74,11 @@
         }
 
         async _execute(that) {
-            that._useCan = true;
-            console.log("that._useCan", that._useCan)
             window.onload = () => {
                 console.log("_execute", that);
                 new window.VConsole();
                 let u = navigator.userAgent;
-                let { _compassAndLocation, _useCan } = that;
+                let { _compassAndLocation } = that;
                 console.log(window.mui);
                 if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
                     startCompassListener(({ compass, beta }) => {
