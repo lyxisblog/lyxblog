@@ -46,7 +46,10 @@
                 }
             ];
 
-            this.loadNeedJsOrCSS();
+
+            window.onload = () => {
+                this.loadNeedJsOrCSS()
+            }
         }
 
         loadNeedJsOrCSS() {
@@ -57,18 +60,20 @@
                 document.head.appendChild(result);
             }
 
-            _isLoadComplete({ scriptOrCSSTree, _labelTypeName }, async (res) => {
-                console.log("over", res);
-                new window.VConsole();
-                await _execute(this).then(_ => {
-                    console.log("window.unityInstance", window.unityInstance);
-                    setInterval(() => {
-                        if (useCan && window.unityInstance) {
-                            console.log("compassAndLocation", compassAndLocation);
-                            unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
-                        }
-                    }, 1000);
-                })
+            _isLoadComplete({ scriptOrCSSTree, _labelTypeName }, async ({ success, type }) => {
+                console.log("loading over", success, type);
+                if (success) {
+                    await _execute(this).then(_ => {
+                        new window.VConsole();
+                        console.log("window.unityInstance", window.unityInstance);
+                        setInterval(() => {
+                            if (useCan && window.unityInstance) {
+                                console.log("compassAndLocation", compassAndLocation);
+                                unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
+                            }
+                        }, 1000);
+                    })
+                }
             })
         }
 
