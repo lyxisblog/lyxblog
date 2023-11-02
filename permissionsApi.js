@@ -46,10 +46,7 @@
                 }
             ];
 
-
-            window.onload = () => {
-                this.loadNeedJsOrCSS()
-            }
+            this.loadNeedJsOrCSS();
         }
 
         loadNeedJsOrCSS() {
@@ -58,46 +55,30 @@
                 let result = _checkLoadType({ src, type });
                 scriptOrCSSTree.push(result)
                 document.head.appendChild(result);
+                _isLoadComplete({ scriptOrCSSTree, _labelTypeName, loadJSOrCSS }, async ({ success, type }) => {
+                    if (success) {
+                        await _execute(this).then(_ => {
+                            console.log("window.unityInstance", window.unityInstance);
+                            setInterval(() => {
+                                console.log(useCan, window.unityInstance);
+                                if (useCan && window.unityInstance) {
+                                    console.log("compassAndLocation", compassAndLocation);
+                                    unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
+                                }
+                            }, 1000);
+                        })
+                    }
+                })
             }
-
-            _isLoadComplete({ scriptOrCSSTree, _labelTypeName }, async ({ success, type }) => {
-                console.log("loading over", success, type);
-                if (success) {
-                    await _execute(this).then(_ => {
-                        new window.VConsole();
-                        console.log("window.unityInstance", window.unityInstance);
-                        setInterval(() => {
-                            if (useCan && window.unityInstance) {
-                                console.log("compassAndLocation", compassAndLocation);
-                                unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
-                            }
-                        }, 1000);
-                    })
-                }
-            })
         }
 
-        async _execute(that) {
-            let u = navigator.userAgent;
-            let { _compassAndLocation, _useCan } = that;
-            console.log(window.mui);
-            if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
-                startCompassListener(({ compass, beta }) => {
-                    if (compass) {
-                        _compassAndLocation.compass.beta = beta;
-                        _compassAndLocation.compass.direction = compass;
-                    }
-                })
-                startWatchPosition(position => {
-                    if (position) {
-                        _compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                        _compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                        _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
-                    }
-                })
-                _useCan = true;
-            } else if (u.indexOf("iPhone") > -1) {
-                window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+        _execute(that) {
+            window.onload = () => {
+                new window.VConsole();
+                let u = navigator.userAgent;
+                let { _compassAndLocation, _useCan } = that;
+                console.log(window.mui);
+                if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
                     startCompassListener(({ compass, beta }) => {
                         if (compass) {
                             _compassAndLocation.compass.beta = beta;
@@ -106,21 +87,38 @@
                     })
                     startWatchPosition(position => {
                         if (position) {
-                            let latitude = position.coords.latitude; // 纬度
-                            let longitude = position.coords.longitude; // 经度
-                            let altitude = position.coords.altitude; // 高度
-                            let speed = position.coords.speed; // 速度
-                            let heading = position.coords.heading; // 方向
                             _compassAndLocation.chooseLocation.latitude = position.coords.latitude;
                             _compassAndLocation.chooseLocation.longitude = position.coords.longitude;
                             _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                         }
-                    });
+                    })
                     _useCan = true;
-                }, 'div')
-            } else {
-                window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定", "取消"], null, "div");
-                return 'noAndoIos'
+                } else if (u.indexOf("iPhone") > -1) {
+                    window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+                        startCompassListener(({ compass, beta }) => {
+                            if (compass) {
+                                _compassAndLocation.compass.beta = beta;
+                                _compassAndLocation.compass.direction = compass;
+                            }
+                        })
+                        startWatchPosition(position => {
+                            if (position) {
+                                let latitude = position.coords.latitude; // 纬度
+                                let longitude = position.coords.longitude; // 经度
+                                let altitude = position.coords.altitude; // 高度
+                                let speed = position.coords.speed; // 速度
+                                let heading = position.coords.heading; // 方向
+                                _compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                                _compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                                _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+                            }
+                        });
+                        _useCan = true;
+                    }, 'div')
+                } else {
+                    window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定", "取消"], null, "div");
+                    return 'noAndoIos'
+                }
             }
         }
 
@@ -132,16 +130,21 @@
             return scriptOrCSStDom
         }
 
-        _isLoadComplete({ scriptOrCSSTree, _labelTypeName }, callback) {
+        _isLoadComplete({ scriptOrCSSTree, _labelTypeName, loadJSOrCSS }, callback) {
             switch (scriptOrCSSTree[scriptOrCSSTree.length - 1].localName) {
                 case _labelTypeName[0]:
-                    scriptOrCSSTree[scriptOrCSSTree.length - 1].onload = () => {
-                        return callback({ success: true, type: "js" })
+                    if (loadJSOrCSS.length == scriptOrCSSTree.length) {
+                        scriptOrCSSTree[scriptOrCSSTree.length - 1].onload = () => {
+                            return callback({ success: true, type: "js" })
+                        }
                     }
+
                     break;
                 case _labelTypeName[1]:
-                    scriptOrCSSTree[scriptOrCSSTree.length - 1].onload = () => {
-                        return callback({ success: true, type: "css" })
+                    if (loadJSOrCSS.length == scriptOrCSSTree.length) {
+                        scriptOrCSSTree[scriptOrCSSTree.length - 1].onload = () => {
+                            return callback({ success: true, type: "css" })
+                        }
                     }
                     break;
                 default:
