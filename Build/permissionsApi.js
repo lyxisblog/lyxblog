@@ -52,6 +52,7 @@
 
         loadNeedJsOrCSS() {
             const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName, _compassAndLocation } = this;
+            let that = this;
             for (const { src, type } of loadJSOrCSS) {
                 let result = _checkLoadType({ src, type });
                 scriptOrCSSTree.push(result)
@@ -66,8 +67,8 @@
                                 setInterval(() => {
                                     console.log(this._useCan, window.unityInstance);
                                     if (this._useCan && window.unityInstance) {
-                                        console.log("compassAndLocation", this.compassAndLocation);
-                                        window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(this.compassAndLocation));
+                                        console.log("compassAndLocation", this._compassAndLocation);
+                                        window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(this._compassAndLocation));
                                     }
                                 }, 1000);
                             })
@@ -78,7 +79,6 @@
         }
 
         async _execute(that) {
-            // window.onload = () => {
             const u = navigator.userAgent;
             const { _startWatchPosition, _startCompassListener } = that;
             if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
@@ -98,7 +98,6 @@
                 that._useCan = true;
                 console.log("that._useCan", that._useCan);
             } else if (u.indexOf("iPhone") > -1) {
-                console.log("_execute", window.mui);
                 window.mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], ({ index }) => {
                     if (index == 1) {
                         _startCompassListener(({ compass, beta }) => {
@@ -129,7 +128,6 @@
                 window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定"], null, "div");
                 return 'noAndoIos'
             }
-            // }
         }
 
         _checkLoadType({ src, type }) {
