@@ -7,7 +7,8 @@
   <title>Unity WebGL Player | ZapperARPro</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
-  <script src="./Build/permissionsApi.js"></script>
+  <!-- <script src="./Build/permissionsApi.js"></script> -->
+  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script>
 </head>
 
 <body>
@@ -109,7 +110,7 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
-        window.unityInstance=unityInstance;
+        window.unityInstance = unityInstance;
         new permissions.init({
           // loadJSOrCSS:[]        // Need Loader JS Or CSS 
           unityInstance: {        // *SendMessage Target
