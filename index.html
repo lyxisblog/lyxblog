@@ -240,12 +240,11 @@
           const altitude = position.coords.altitude; // 高度
           const speed = position.coords.speed; // 速度
           const heading = position.coords.heading; // 方向
-          const accuracy = position.coords.accuracy; // 米
           callback(position)
         }, function (error) {
           // 获取位置信息失败
           console.error("获取位置信息失败：" + error.message);
-        });
+        }, { enableHighAccuracy: true });
       } else {
         // 不支持Geolocation
         console.error("浏览器不支持Geolocation API");
