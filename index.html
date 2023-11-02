@@ -114,7 +114,7 @@
         new permissions.init({
           // loadJSOrCSS:[]        // Need Loader JS Or CSS 
           unityInstance: {        // *SendMessage Target
-            target: {},
+            target: unityInstance,
             sendMessage: {
               gameObject: "UnityJsBridge",
               methodName: "JsToUnityTrigger",
