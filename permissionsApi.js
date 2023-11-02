@@ -47,7 +47,6 @@
             ];
 
             this.loadNeedJsOrCSS();
-
         }
 
         loadNeedJsOrCSS() {
@@ -75,23 +74,21 @@
 
         async _execute(that) {
             window.onload = () => {
-                console.log("_execute", that);
                 new window.VConsole();
                 let u = navigator.userAgent;
-                let { _compassAndLocation } = that;
-                console.log(window.mui);
+                let { startWatchPosition, startCompassListener } = that;
                 if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
                     startCompassListener(({ compass, beta }) => {
                         if (compass) {
-                            _compassAndLocation.compass.beta = beta;
-                            _compassAndLocation.compass.direction = compass;
+                            that._compassAndLocation.compass.beta = beta;
+                            that._compassAndLocation.compass.direction = compass;
                         }
                     })
                     startWatchPosition(position => {
                         if (position) {
-                            _compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                            _compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                            _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+                            that._compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                            that._compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                            that._compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                         }
                     })
                     that._useCan = true;
@@ -100,8 +97,8 @@
                     window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
                         startCompassListener(({ compass, beta }) => {
                             if (compass) {
-                                _compassAndLocation.compass.beta = beta;
-                                _compassAndLocation.compass.direction = compass;
+                                that._compassAndLocation.compass.beta = beta;
+                                that._compassAndLocation.compass.direction = compass;
                             }
                         })
                         startWatchPosition(position => {
@@ -111,9 +108,9 @@
                                 let altitude = position.coords.altitude; // 高度
                                 let speed = position.coords.speed; // 速度
                                 let heading = position.coords.heading; // 方向
-                                _compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                                _compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                                _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+                                that._compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                                that._compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                                that._compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                             }
                         });
                         that._useCan = true;
