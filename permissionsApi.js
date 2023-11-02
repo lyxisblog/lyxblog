@@ -1,4 +1,5 @@
 (function (root, factory) {
+    "use strict";
     if (typeof exports === "object" && typeof module === "object") {
         // CommonJS (Node.js) environment
         module.exports = factory(exports);
@@ -75,16 +76,16 @@
         async _execute(that) {
             window.onload = () => {
                 new window.VConsole();
-                let u = navigator.userAgent;
-                let { startWatchPosition, startCompassListener } = that;
+                const u = navigator.userAgent;
+                const { _startWatchPosition, _startCompassListener } = that;
                 if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
-                    startCompassListener(({ compass, beta }) => {
+                    _startCompassListener(({ compass, beta }) => {
                         if (compass) {
                             that._compassAndLocation.compass.beta = beta;
                             that._compassAndLocation.compass.direction = compass;
                         }
                     })
-                    startWatchPosition(position => {
+                    _startWatchPosition(position => {
                         if (position) {
                             that._compassAndLocation.chooseLocation.latitude = position.coords.latitude;
                             that._compassAndLocation.chooseLocation.longitude = position.coords.longitude;
@@ -95,13 +96,13 @@
                     console.log("that._useCan", that._useCan);
                 } else if (u.indexOf("iPhone") > -1) {
                     window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
-                        startCompassListener(({ compass, beta }) => {
+                        _startCompassListener(({ compass, beta }) => {
                             if (compass) {
                                 that._compassAndLocation.compass.beta = beta;
                                 that._compassAndLocation.compass.direction = compass;
                             }
                         })
-                        startWatchPosition(position => {
+                        _startWatchPosition(position => {
                             if (position) {
                                 let latitude = position.coords.latitude; // 纬度
                                 let longitude = position.coords.longitude; // 经度
@@ -128,7 +129,7 @@
             scriptOrCSStDom.type = type == 1 ? "text/javascript" : "text/css";
             scriptOrCSStDom[type == 1 ? "src" : "href"] = src;
             scriptOrCSStDom[type == 1 ? "" : "rel"] = "stylesheet";
-            return scriptOrCSStDom
+            return scriptOrCSStDom;
         }
 
         _isLoadComplete({ scriptOrCSSTree, _labelTypeName, loadJSOrCSS }, callback) {
