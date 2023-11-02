@@ -110,11 +110,11 @@
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         loadingBar.style.display = "none";
-        window.unityInstance = unityInstance;
+        // window.unityInstance = unityInstance;
         new permissions.init({
           // loadJSOrCSS:[]        // Need Loader JS Or CSS 
           unityInstance: {        // *SendMessage Target
-            target: unityInstance,
+            target: {},
             sendMessage: {
               gameObject: "UnityJsBridge",
               methodName: "JsToUnityTrigger",
@@ -123,9 +123,16 @@
           },
           deviceAuthorization: {
             confirm: {
-              message: "",
-              title: "",
-              btnValue: [],
+              message: "《AR导航》需要访问您的运动与方向，需要您的授权！",
+              title: "提示",
+              btnValue: ['取消', '允许'],
+              callback: (res) => { },
+              type: "div"
+            },
+            alert: {
+              message: "请使用安卓或苹果设备打开！",
+              title: "提示",
+              btnValue: ["确定"],
               callback: () => { },
               type: "div"
             }
