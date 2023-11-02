@@ -63,7 +63,7 @@
                                 console.log(useCan, window.unityInstance);
                                 if (useCan && window.unityInstance) {
                                     console.log("compassAndLocation", compassAndLocation);
-                                    unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
+                                    window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
                                 }
                             }, 1000);
                         })
@@ -72,7 +72,7 @@
             }
         }
 
-        _execute(that) {
+        async _execute(that) {
             window.onload = () => {
                 new window.VConsole();
                 let u = navigator.userAgent;

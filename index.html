@@ -218,7 +218,25 @@
             }
         };
         let useCan = false;
-        new permissions.init();
+        // new permissions.init({
+        //     // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+        //     unityInstance: {        // *SendMessage Target
+        //         target: "unityInstance",
+        //         sendMessage: {
+        //             gameObject: "UnityJsBridge",
+        //             methodName: "JsToUnityTrigger",
+        //         }
+        //     },
+        //     deviceAuthorization: {
+        //         confirm: {
+        //             message: "",
+        //             title: "",
+        //             btnValue: [],
+        //             callback: () => { },
+        //             type: "div"
+        //         }
+        //     }
+        // });
         function CreateUnityLoader() {
             createUnityInstance(canvas, config, (progress) => {
                 spinner.style.display = "none";
@@ -227,7 +245,26 @@
             }).then((unityInstance) => {
                 loadingCover.style.display = "none";
                 window.unityInstance = unityInstance;
-                new permissions.init();
+                new permissions.init({
+                    // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+                    unityInstance: {        // *SendMessage Target
+                        target: unityInstance,
+                        sendMessage: {
+                            gameObject: "UnityJsBridge",
+                            methodName: "JsToUnityTrigger",
+                            timer: 1000,
+                        }
+                    },
+                    deviceAuthorization: {
+                        confirm: {
+                            message: "",
+                            title: "",
+                            btnValue: [],
+                            callback: () => { },
+                            type: "div"
+                        }
+                    }
+                });
                 // var u = navigator.userAgent;
                 // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
                 //     startCompassListener(({ compass, beta }) => {
