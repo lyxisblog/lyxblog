@@ -7,13 +7,7 @@
   <title>Unity WebGL Player | ZapperARPro</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
-  <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
-    integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
-    integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./Build/permissionsApi.js"></script>
 </head>
 
 <body>
@@ -67,9 +61,9 @@
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/Web.loader.js";
     var config = {
-      dataUrl: buildUrl + "/6544d48db5d4d597ee0df4eec77a9847.data.unityweb",
-      frameworkUrl: buildUrl + "/9e26fa430c63e7fda7f1ea85e2370f10.js.unityweb",
-      codeUrl: buildUrl + "/0cde59d2ab91d0056c5c0638dd4d2aab.wasm.unityweb",
+      dataUrl: buildUrl + "/94ab823a706aa95d0ee44a6895b3c692.data.unityweb",
+      frameworkUrl: buildUrl + "/29ed8a9b9a3bd9a1961d9b91ad7cea81.js.unityweb",
+      codeUrl: buildUrl + "/be6b9f435d8c1af763973c5c4aebda12.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "DefaultCompany",
       productName: "ZapperARPro",
@@ -98,7 +92,7 @@
       // performance, uncomment the following line:
       // config.devicePixelRatio = 1;
 
-      // unityShowBanner('WebGL builds are not supported on mobile devices.');
+      unityShowBanner('WebGL builds are not supported on mobile devices.');
     } else {
       // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
@@ -107,20 +101,6 @@
     }
 
     loadingBar.style.display = "block";
-    new window.VConsole();
-    let compassAndLocation = {
-      compass: {
-        beta: "",
-        direction: "",
-
-      },
-      chooseLocation: {
-        latitude: "",
-        longitude: "",
-        accuracy: ""
-      }
-    };
-    let useCan = false;
 
     var script = document.createElement("script");
     script.src = loaderUrl;
@@ -128,61 +108,27 @@
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
-        window.unityInstance = unityInstance;
         loadingBar.style.display = "none";
-        var u = navigator.userAgent;
-        if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-          startCompassListener(({ compass, beta }) => {
-            if (compass) {
-              // console.log("startCompassListener", compass, beta);
-              compassAndLocation.compass.beta = beta;
-              compassAndLocation.compass.direction = compass;
+        new permissions.init({
+          // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+          unityInstance: {        // *SendMessage Target
+            target: unityInstance,
+            sendMessage: {
+              gameObject: "UnityJsBridge",
+              methodName: "JsToUnityTrigger",
+              timer: 1000,
             }
-          })
-          startWatchPosition(position => {
-            if (position) {
-              // console.log("startWatchPosition", position);
-              compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-              compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-              compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+          },
+          deviceAuthorization: {
+            confirm: {
+              message: "",
+              title: "",
+              btnValue: [],
+              callback: () => { },
+              type: "div"
             }
-          })
-          useCan = true;
-        } else if (u.indexOf('iPhone') > -1) {
-          mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
-            console.log("IOS mui", res);
-            startCompassListener(({ compass, beta }) => {
-              if (compass) {
-                // console.log("IOS startCompassListener", compass, beta);
-                compassAndLocation.compass.beta = beta;
-                compassAndLocation.compass.direction = compass;
-              }
-            })
-            startWatchPosition(position => {
-              if (position) {
-                let latitude = position.coords.latitude; // 纬度
-                let longitude = position.coords.longitude; // 经度
-                let altitude = position.coords.altitude; // 高度
-                let speed = position.coords.speed; // 速度
-                let heading = position.coords.heading; // 方向
-                // console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
-                compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
-              }
-            });
-            useCan = true;
-          }, 'div')
-        } else {
-          return 'noAndoIos'
-        }
-
-        setInterval(() => {
-          if (useCan) {
-            console.log("compassAndLocation", compassAndLocation);
-            unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
           }
-        }, 1000);
+        });
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
@@ -191,65 +137,6 @@
       });
     };
     document.body.appendChild(script);
-
-    function startCompassListener(callback) {
-      if (!window["DeviceOrientationEvent"]) {
-        console.warn("DeviceOrientation API not available");
-        return;
-      }
-      let absoluteListener = (e) => {
-        if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
-          return;
-        let compass = -(e.alpha + e.beta * e.gamma / 90);
-        compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
-        window.removeEventListener("deviceorientation", webkitListener);
-        callback({ compass, beta: e.beta });
-      };
-      let webkitListener = (e) => {
-        let compass = e.webkitCompassHeading;
-        if (compass != null && !isNaN(compass)) {
-          callback({ compass, beta: e.beta });
-          window.removeEventListener("deviceorientationabsolute", absoluteListener);
-        }
-      }
-
-      function addListeners() {
-        window.addEventListener("deviceorientationabsolute", absoluteListener);
-        window.addEventListener("deviceorientation", webkitListener);
-      }
-
-      if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
-        DeviceOrientationEvent["requestPermission"]()
-          .then(response => {
-            if (response == "granted") {
-              addListeners();
-            } else
-              console.warn("Permission for DeviceMotionEvent not granted");
-          });
-      } else
-        addListeners();
-    }
-
-    function startWatchPosition(callback) {
-      if ("geolocation" in navigator) {
-        // 支持Geolocation
-        navigator.geolocation.watchPosition(function (position) {
-          // 成功获取位置信息
-          const latitude = position.coords.latitude; // 纬度
-          const longitude = position.coords.longitude; // 经度
-          const altitude = position.coords.altitude; // 高度
-          const speed = position.coords.speed; // 速度
-          const heading = position.coords.heading; // 方向
-          callback(position)
-        }, function (error) {
-          // 获取位置信息失败
-          console.error("获取位置信息失败：" + error.message);
-        }, { enableHighAccuracy: true });
-      } else {
-        // 不支持Geolocation
-        console.error("浏览器不支持Geolocation API");
-      }
-    }
   </script>
 </body>
 

@@ -48,40 +48,39 @@
             ];
 
             this.loadNeedJsOrCSS();
-            window.onload = () => {
-                const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName } = this;
-                _isLoadComplete({ scriptOrCSSTree, _labelTypeName, loadJSOrCSS }, async ({ success, type }) => {
+        }
+
+        loadNeedJsOrCSS() {
+            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName, _compassAndLocation } = this;
+            for (const { src, type } of loadJSOrCSS) {
+                let result = _checkLoadType({ src, type });
+                scriptOrCSSTree.push(result)
+                document.head.appendChild(result);
+                _isLoadComplete({ scriptOrCSSTree, _labelTypeName, loadJSOrCSS }, ({ success, type }) => {
                     if (success) {
-                        await _execute(this).then(_ => {
-                            console.log("window.unityInstance", window.unityInstance);
-                            setTimeout(() => new window.VConsole(), 500)
-                            setInterval(() => {
-                                console.log(this._useCan, window.unityInstance);
-                                if (this._useCan && window.unityInstance) {
-                                    console.log("compassAndLocation", compassAndLocation);
-                                    window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
-                                }
-                            }, 1000);
-                        })
+                        console.log("successsuccesssuccesssuccesssuccesssuccesssuccess", success);
+                        setTimeout(() => {
+                            _execute(this).then(_ => {
+                                console.log("window.unityInstance", window.unityInstance);
+                                setTimeout(() => new window.VConsole(), 500)
+                                setInterval(() => {
+                                    console.log(this._useCan, window.unityInstance);
+                                    if (this._useCan && window.unityInstance) {
+                                        console.log("compassAndLocation", this.compassAndLocation);
+                                        window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(this.compassAndLocation));
+                                    }
+                                }, 1000);
+                            })
+                        }, 1000)
                     }
                 })
             }
         }
 
-        loadNeedJsOrCSS() {
-            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName } = this;
-            for (const { src, type } of loadJSOrCSS) {
-                let result = _checkLoadType({ src, type });
-                scriptOrCSSTree.push(result)
-                document.head.appendChild(result);
-            }
-        }
-
         async _execute(that) {
-
+            // window.onload = () => {
             const u = navigator.userAgent;
             const { _startWatchPosition, _startCompassListener } = that;
-            console.log("u", u);
             if (u.indexOf("Android") > -1 || u.indexOf("Linux") > -1 || u.indexOf("Windows Phone") > -1) {
                 _startCompassListener(({ compass, beta }) => {
                     if (compass) {
@@ -99,7 +98,8 @@
                 that._useCan = true;
                 console.log("that._useCan", that._useCan);
             } else if (u.indexOf("iPhone") > -1) {
-                window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], ({ index }) => {
+                console.log("_execute", window.mui);
+                window.mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], ({ index }) => {
                     if (index == 1) {
                         _startCompassListener(({ compass, beta }) => {
                             if (compass) {
@@ -126,9 +126,10 @@
                     console.log("that._useCan", that._useCan);
                 }, 'div')
             } else {
-                window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定", "取消"], null, "div");
+                window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定"], null, "div");
                 return 'noAndoIos'
             }
+            // }
         }
 
         _checkLoadType({ src, type }) {
@@ -213,11 +214,12 @@
                     callback(position)
                 }, function (error) {
                     console.error("获取位置信息失败：" + error.message);
-                });
+                }, { enableHighAccuracy: true, maximumAge: 0 });
             } else {
                 console.error("浏览器不支持Geolocation API");
             }
         }
     }
+
     return exports;
 })));
