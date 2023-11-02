@@ -75,6 +75,7 @@
 
         async _execute(that) {
             window.onload = () => {
+                console.log("_execute", that);
                 new window.VConsole();
                 let u = navigator.userAgent;
                 let { _compassAndLocation, _useCan } = that;
@@ -93,7 +94,7 @@
                             _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                         }
                     })
-                    _useCan = true;
+                    that._useCan = true;
                 } else if (u.indexOf("iPhone") > -1) {
                     window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
                         startCompassListener(({ compass, beta }) => {
@@ -114,7 +115,7 @@
                                 _compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
                             }
                         });
-                        _useCan = true;
+                        that._useCan = true;
                     }, 'div')
                 } else {
                     window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定", "取消"], null, "div");
