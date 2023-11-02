@@ -59,7 +59,9 @@
 
             _isLoadComplete({ scriptOrCSSTree, _labelTypeName }, async (res) => {
                 console.log("over", res);
+                new window.VConsole();
                 await _execute(this).then(_ => {
+                    console.log("window.unityInstance", window.unityInstance);
                     setInterval(() => {
                         if (useCan && window.unityInstance) {
                             console.log("compassAndLocation", compassAndLocation);
