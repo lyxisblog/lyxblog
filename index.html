@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico">
     <title>ZapperARPro</title>
-    <script src="./permissionsApi.js?v=2"></script>
 
     <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
@@ -145,6 +144,8 @@
         </div>
     </div>
     <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.7/zappar-cv.js"></script>
+    <!-- <script src="./permissionsApi.js?v=2"></script> -->
+    <script src="http://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js?v=1"></script>
     <script>
         var db = indexedDB.open("dummy_indexdb", 1); // iOS 14.6 fix; the call to open indexdb hangs forever otherwise
         const buildUrl = "Build";
@@ -218,25 +219,25 @@
             }
         };
         let useCan = false;
-        // new permissions.init({
-        //     // loadJSOrCSS:[]        // Need Loader JS Or CSS 
-        //     unityInstance: {        // *SendMessage Target
-        //         target: "unityInstance",
-        //         sendMessage: {
-        //             gameObject: "UnityJsBridge",
-        //             methodName: "JsToUnityTrigger",
-        //         }
-        //     },
-        //     deviceAuthorization: {
-        //         confirm: {
-        //             message: "",
-        //             title: "",
-        //             btnValue: [],
-        //             callback: () => { },
-        //             type: "div"
-        //         }
-        //     }
-        // });
+        new permissions.init({
+            // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+            unityInstance: {        // *SendMessage Target
+                target: "unityInstance",
+                sendMessage: {
+                    gameObject: "UnityJsBridge",
+                    methodName: "JsToUnityTrigger",
+                }
+            },
+            deviceAuthorization: {
+                confirm: {
+                    message: "",
+                    title: "",
+                    btnValue: [],
+                    callback: () => { },
+                    type: "div"
+                }
+            }
+        });
         function CreateUnityLoader() {
             createUnityInstance(canvas, config, (progress) => {
                 spinner.style.display = "none";
