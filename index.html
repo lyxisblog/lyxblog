@@ -9,13 +9,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="favicon.ico">
     <title>ZapperARPro</title>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script src="./permissionsApi.js"></script>
+
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
         integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
         integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <style>
         html {
             box-sizing: border-box;
@@ -142,10 +144,9 @@
             <div class="spinner"></div>
         </div>
     </div>
-    <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.7/zappar-cv.js"></script>
+    <!-- <script type="text/javascript" src="https://libs.zappar.com/zappar-cv/2.1.7/zappar-cv.js"></script> -->
     <script>
         var db = indexedDB.open("dummy_indexdb", 1); // iOS 14.6 fix; the call to open indexdb hangs forever otherwise
-
         const buildUrl = "Build";
         const loaderUrl = buildUrl + "/webTest.loader.js";
         const config = {
@@ -187,14 +188,14 @@
         }
         loadingCover.style.display = "";
 
-        window.zappar = ZCV.initialize();
+        // window.zappar = ZCV.initialize();
 
         const script = document.createElement("script");
         script.src = loaderUrl;
         //script.onload = () => { CreateUnityLoader();   };
         document.body.appendChild(script);
-
-        window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
+        
+        // window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
 
         function WaitForZCVLoad() {
             if (zappar.loaded()) {
@@ -226,62 +227,61 @@
             }).then((unityInstance) => {
                 loadingCover.style.display = "none";
                 window.unityInstance = unityInstance;
-
-
+                new permissions.init();
                 new window.VConsole();
-                var u = navigator.userAgent;
-                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-                    startCompassListener(({ compass, beta }) => {
-                        if (compass) {
-                            // console.log("startCompassListener", compass, beta);
-                            compassAndLocation.compass.beta = beta;
-                            compassAndLocation.compass.direction = compass;
-                        }
-                    })
-                    startWatchPosition(position => {
-                        if (position) {
-                            // console.log("startWatchPosition", position);
-                            compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                            compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                            compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
-                        }
-                    })
-                    useCan = true;
-                } else if (u.indexOf('iPhone') > -1) {
-                    mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
-                        console.log("IOS mui", res);
-                        startCompassListener(({ compass, beta }) => {
-                            if (compass) {
-                                // console.log("IOS startCompassListener", compass, beta);
-                                compassAndLocation.compass.beta = beta;
-                                compassAndLocation.compass.direction = compass;
-                            }
-                        })
-                        startWatchPosition(position => {
-                            if (position) {
-                                let latitude = position.coords.latitude; // 纬度
-                                let longitude = position.coords.longitude; // 经度
-                                let altitude = position.coords.altitude; // 高度
-                                let speed = position.coords.speed; // 速度
-                                let heading = position.coords.heading; // 方向
-                                // console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
-                                compassAndLocation.chooseLocation.latitude = position.coords.latitude;
-                                compassAndLocation.chooseLocation.longitude = position.coords.longitude;
-                                compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
-                            }
-                        });
-                        useCan = true;
-                    }, 'div')
-                } else {
-                    return 'noAndoIos'
-                }
+                // var u = navigator.userAgent;
+                // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
+                //     startCompassListener(({ compass, beta }) => {
+                //         if (compass) {
+                //             // console.log("startCompassListener", compass, beta);
+                //             compassAndLocation.compass.beta = beta;
+                //             compassAndLocation.compass.direction = compass;
+                //         }
+                //     })
+                //     startWatchPosition(position => {
+                //         if (position) {
+                //             // console.log("startWatchPosition", position);
+                //             compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                //             compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                //             compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+                //         }
+                //     })
+                //     useCan = true;
+                // } else if (u.indexOf('iPhone') > -1) {
+                //     mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+                //         console.log("IOS mui", res);
+                //         startCompassListener(({ compass, beta }) => {
+                //             if (compass) {
+                //                 // console.log("IOS startCompassListener", compass, beta);
+                //                 compassAndLocation.compass.beta = beta;
+                //                 compassAndLocation.compass.direction = compass;
+                //             }
+                //         })
+                //         startWatchPosition(position => {
+                //             if (position) {
+                //                 let latitude = position.coords.latitude; // 纬度
+                //                 let longitude = position.coords.longitude; // 经度
+                //                 let altitude = position.coords.altitude; // 高度
+                //                 let speed = position.coords.speed; // 速度
+                //                 let heading = position.coords.heading; // 方向
+                //                 // console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+                //                 compassAndLocation.chooseLocation.latitude = position.coords.latitude;
+                //                 compassAndLocation.chooseLocation.longitude = position.coords.longitude;
+                //                 compassAndLocation.chooseLocation.accuracy = position.coords.accuracy;
+                //             }
+                //         });
+                //         useCan = true;
+                //     }, 'div')
+                // } else {
+                //     return 'noAndoIos'
+                // }
 
-                setInterval(() => {
-                    if (useCan) {
-                        console.log("compassAndLocation", compassAndLocation);
-                        unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
-                    }
-                }, 1000);
+                // setInterval(() => {
+                //     if (useCan) {
+                //         console.log("compassAndLocation", compassAndLocation);
+                //         unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify(compassAndLocation));
+                //     }
+                // }, 1000);
             }).catch((message) => {
                 alert(message);
             });
@@ -335,6 +335,7 @@
                     const altitude = position.coords.altitude; // 高度
                     const speed = position.coords.speed; // 速度
                     const heading = position.coords.heading; // 方向
+                    const accuracy = position.coords.accuracy; // 米
                     callback(position)
                 }, function (error) {
                     // 获取位置信息失败
