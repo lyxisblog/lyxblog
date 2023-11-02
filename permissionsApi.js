@@ -74,6 +74,8 @@
         }
 
         async _execute(that) {
+            that._useCan = true;
+            console.log("that._useCan", that._useCan)
             window.onload = () => {
                 console.log("_execute", that);
                 new window.VConsole();
@@ -95,6 +97,7 @@
                         }
                     })
                     that._useCan = true;
+                    console.log("that._useCan", that._useCan);
                 } else if (u.indexOf("iPhone") > -1) {
                     window.mui?.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
                         startCompassListener(({ compass, beta }) => {
@@ -116,6 +119,7 @@
                             }
                         });
                         that._useCan = true;
+                        console.log("that._useCan", that._useCan);
                     }, 'div')
                 } else {
                     window.mui?.alert("请使用安卓或苹果设备打开！", "提示", ["确定", "取消"], null, "div");

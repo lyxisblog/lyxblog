@@ -218,25 +218,25 @@
             }
         };
         let useCan = false;
-        new permissions.init({
-            // loadJSOrCSS:[]        // Need Loader JS Or CSS 
-            unityInstance: {        // *SendMessage Target
-                target: "unityInstance",
-                sendMessage: {
-                    gameObject: "UnityJsBridge",
-                    methodName: "JsToUnityTrigger",
-                }
-            },
-            deviceAuthorization: {
-                confirm: {
-                    message: "",
-                    title: "",
-                    btnValue: [],
-                    callback: () => { },
-                    type: "div"
-                }
-            }
-        });
+        // new permissions.init({
+        //     // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+        //     unityInstance: {        // *SendMessage Target
+        //         target: "unityInstance",
+        //         sendMessage: {
+        //             gameObject: "UnityJsBridge",
+        //             methodName: "JsToUnityTrigger",
+        //         }
+        //     },
+        //     deviceAuthorization: {
+        //         confirm: {
+        //             message: "",
+        //             title: "",
+        //             btnValue: [],
+        //             callback: () => { },
+        //             type: "div"
+        //         }
+        //     }
+        // });
         function CreateUnityLoader() {
             createUnityInstance(canvas, config, (progress) => {
                 spinner.style.display = "none";
