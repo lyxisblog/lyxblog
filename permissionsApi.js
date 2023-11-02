@@ -47,10 +47,11 @@
             ];
 
             this.loadNeedJsOrCSS();
+
         }
 
         loadNeedJsOrCSS() {
-            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName } = this;
+            const { _checkLoadType, _isLoadComplete, _execute, loadJSOrCSS, scriptOrCSSTree, _labelTypeName, _useCan } = this;
             for (const { src, type } of loadJSOrCSS) {
                 let result = _checkLoadType({ src, type });
                 scriptOrCSSTree.push(result)
@@ -60,8 +61,8 @@
                         await _execute(this).then(_ => {
                             console.log("window.unityInstance", window.unityInstance);
                             setInterval(() => {
-                                console.log(useCan, window.unityInstance);
-                                if (useCan && window.unityInstance) {
+                                console.log(_useCan, window.unityInstance);
+                                if (_useCan && window.unityInstance) {
                                     console.log("compassAndLocation", compassAndLocation);
                                     window.unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(compassAndLocation));
                                 }
