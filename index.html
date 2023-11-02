@@ -188,14 +188,14 @@
         }
         loadingCover.style.display = "";
 
-        // window.zappar = ZCV.initialize();
+        window.zappar = ZCV.initialize();
 
         const script = document.createElement("script");
         script.src = loaderUrl;
-        script.onload = () => { new permissions.init(); };
+        script.onload = () => {  };
         document.body.appendChild(script);
 
-        // window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
+        window.zappar.permission_request_ui_promise().then(WaitForZCVLoad);
 
         function WaitForZCVLoad() {
             if (zappar.loaded()) {
@@ -227,7 +227,7 @@
             }).then((unityInstance) => {
                 loadingCover.style.display = "none";
                 window.unityInstance = unityInstance;
-
+                new permissions.init();
                 new window.VConsole();
                 // var u = navigator.userAgent;
                 // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
