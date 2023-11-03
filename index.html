@@ -61,9 +61,9 @@
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/Web.loader.js";
     var config = {
-      dataUrl: buildUrl + "/d782a03ec88adb35be73561b76f52362.data.unityweb",
-      frameworkUrl: buildUrl + "/831eada2820719c94349bd38c279df23.js.unityweb",
-      codeUrl: buildUrl + "/3da01e94f54e13c9bee14bb4801f89c3.wasm.unityweb",
+      dataUrl: buildUrl + "/a1d37176c7aad57fe8d7aa7e98abe3ed.data.unityweb",
+      frameworkUrl: buildUrl + "/a9161759ad02aefba21365832cefcf38.js.unityweb",
+      codeUrl: buildUrl + "/b51db2613170acf54e8c9e6587bfd442.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "DefaultCompany",
       productName: "ZapperARPro",
@@ -108,7 +108,6 @@
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = 100 * progress + "%";
       }).then((unityInstance) => {
-        loadingBar.style.display = "none";
 
         new permissions.init({
           // loadJSOrCSS:[]        // Need Loader JS Or CSS 
@@ -139,6 +138,7 @@
           errors: ({ index, value: { error, btnName } }) => { },
         });
 
+        loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
