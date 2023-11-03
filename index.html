@@ -112,16 +112,29 @@
         new permissions.init({
           // loadJSOrCSS:[]        // Need Loader JS Or CSS 
           unityInstance: {        // *SendMessage Target
-            target: unityInstance,
+            // target: unityInstance,
             sendMessage: {
               gameObject: "UnityJsBridge",
               methodName: "JsToUnityTrigger",
               timer: 1000,
             }
           },
+          permissions: {
+            mediaDevices: {
+              enabled: true,
+              canvas: '',
+              video: {
+                width: 1280,
+                height: 720,
+                // frameRate: { ideal: 10, max: 15 },
+                facingMode: { exact: "environment" },
+              },
+              audio: false,
+            }
+          },
           deviceAuthorization: {
             confirm: {
-              message: "《AR导航》需要访问您的运动与方向，需要您的授权！",
+              message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
               title: "提示",
               btnValue: ['取消', '允许'],
               callback: ({ index, value: { authorization, btnName } }) => { },
