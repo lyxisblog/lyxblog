@@ -1,165 +1,174 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity WebGL Player | ZapperARPro</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="stylesheet" href="TemplateData/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
+    integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
+    integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+  <!-- <script src="../../webAr/asd/immersal/permissionsApi.js"></script> -->
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script>
+  <style>
+    .open {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width=375 height=812></canvas>
-    <div id="unity-loading-bar">
-      <div id="unity-logo"></div>
-      <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
-      </div>
-    </div>
-    <div id="unity-warning"> </div>
-    <div id="unity-footer">
-      <div id="unity-webgl-logo"></div>
-      <div id="unity-fullscreen-button"></div>
-      <div id="unity-build-title">ZapperARPro</div>
-    </div>
-  </div>
+  <!-- <video width="500" height="500" autoplay class="video"></video> -->
+  <!-- <canvas width="500" height="500"></canvas> -->
   <script>
-    var container = document.querySelector("#unity-container");
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBarFull = document.querySelector("#unity-progress-bar-full");
-    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-    var warningBanner = document.querySelector("#unity-warning");
 
-    // Shows a temporary message banner/ribbon for a few seconds, or
-    // a permanent error message on top of the canvas if type=='error'.
-    // If type=='warning', a yellow highlight color is used.
-    // Modify or remove this function to customize the visually presented
-    // way that non-critical warnings and error messages are presented to the
-    // user.
-    function unityShowBanner(msg, type) {
-      function updateBannerVisibility() {
-        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+    function startCompassListener(callback) {
+      if (!window["DeviceOrientationEvent"]) {
+        console.warn("DeviceOrientation API not available");
+        return;
       }
-      var div = document.createElement('div');
-      div.innerHTML = msg;
-      warningBanner.appendChild(div);
-      if (type == 'error') div.style = 'background: red; padding: 10px;';
-      else {
-        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-        setTimeout(function () {
-          warningBanner.removeChild(div);
-          updateBannerVisibility();
-        }, 5000);
+      let absoluteListener = (e) => {
+        if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
+          return;
+        let compass = -(e.alpha + e.beta * e.gamma / 90);
+        compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
+        window.removeEventListener("deviceorientation", webkitListener);
+        callback(compass);
+      };
+      let webkitListener = (e) => {
+        let compass = e.webkitCompassHeading;
+        if (compass != null && !isNaN(compass)) {
+          callback(compass);
+          window.removeEventListener("deviceorientationabsolute", absoluteListener);
+        }
       }
-      updateBannerVisibility();
+
+      function addListeners() {
+        window.addEventListener("deviceorientationabsolute", absoluteListener);
+        window.addEventListener("deviceorientation", webkitListener);
+      }
+
+      if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
+        DeviceOrientationEvent["requestPermission"]()
+          .then(response => {
+            if (response == "granted") {
+              addListeners();
+            } else
+              console.warn("Permission for DeviceMotionEvent not granted");
+          });
+      } else
+        addListeners();
     }
 
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/Web.loader.js";
-    var config = {
-      dataUrl: buildUrl + "/a1d37176c7aad57fe8d7aa7e98abe3ed.data.unityweb",
-      frameworkUrl: buildUrl + "/a9161759ad02aefba21365832cefcf38.js.unityweb",
-      codeUrl: buildUrl + "/b51db2613170acf54e8c9e6587bfd442.wasm.unityweb",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "DefaultCompany",
-      productName: "ZapperARPro",
-      productVersion: "0.1",
-      showBanner: unityShowBanner,
-    };
-
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
-
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      // Mobile device style: fill the whole browser client area with the game canvas:
-
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-      document.getElementsByTagName('head')[0].appendChild(meta);
-      container.className = "unity-mobile";
-      canvas.className = "unity-mobile";
-
-      // To lower canvas resolution on mobile devices to gain some
-      // performance, uncomment the following line:
-      // config.devicePixelRatio = 1;
-
-      unityShowBanner('WebGL builds are not supported on mobile devices.');
-    } else {
-      // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-
-      canvas.style.width = "375px";
-      canvas.style.height = "812px";
+    function startWatchPosition(callback) {
+      if ("geolocation" in navigator) {
+        // 支持Geolocation
+        navigator.geolocation.watchPosition(function (position) {
+          // 成功获取位置信息
+          const latitude = position.coords.latitude; // 纬度
+          const longitude = position.coords.longitude; // 经度
+          const altitude = position.coords.altitude; // 高度
+          const speed = position.coords.speed; // 速度
+          const heading = position.coords.heading; // 方向
+          callback(position)
+        }, function (error) {
+          // 获取位置信息失败
+          console.error("获取位置信息失败：" + error.message);
+        }, { enableHighAccuracy: true, maximumAge: 0 });
+      } else {
+        // 不支持Geolocation
+        console.error("浏览器不支持Geolocation API");
+      }
     }
 
-    loadingBar.style.display = "block";
+    window.onload = () => {
+      // new window.VConsole();
 
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = 100 * progress + "%";
-      }).then((unityInstance) => {
-
-        new permissions.init({
-          // loadJSOrCSS:[]        // Need Loader JS Or CSS 
-          unityInstance: {        // *SendMessage Target
-            // target: unityInstance,
-            sendMessage: {
-              gameObject: "UnityJsBridge",
-              methodName: "JsToUnityTrigger",
-              timer: 1000,
-            }
-          },
-          permissions: {
-            mediaDevices: {
-              enabled: true,
-              canvas: '',
-              video: {
-                width: 1280,
-                height: 720,
-                // frameRate: { ideal: 10, max: 15 },
-                facingMode: { exact: "environment" },
-              },
-              audio: false,
-            }
-          },
-          deviceAuthorization: {
-            confirm: {
-              message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
-              title: "提示",
-              btnValue: ['取消', '允许'],
-              callback: ({ index, value: { authorization, btnName } }) => { },
-              type: "div"
+      new permissions.init({
+        // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+        unityInstance: {        // *SendMessage Target
+          // target: unityInstance,
+          sendMessage: {
+            gameObject: "UnityJsBridge",
+            methodName: "JsToUnityTrigger",
+            timer: 1000,
+          }
+        },
+        permissions: {
+          mediaDevices: {
+            // enabled: true,
+            // canvas: '',
+            video: {
+              width: 1280,
+              height: 720,
+              // frameRate: { ideal: 10, max: 15 },
+              facingMode: { exact: "environment" },
             },
-            alert: {
-              message: "请使用安卓或苹果设备打开！",
-              title: "提示",
-              btnValue: ["确定"],
-              callback: ({ index, value: { inform, btnName } }) => { },
-              type: "div"
-            }
+            audio: false,
+          }
+        },
+        deviceAuthorization: {
+          confirm: {
+            message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
+            title: "提示",
+            btnValue: ['取消', '允许'],
+            callback: ({ index, value: { authorization, btnName } }) => { },
+            type: "div"
           },
-          errors: ({ index, value: { error, btnName } }) => { },
-        });
-
-        loadingBar.style.display = "none";
-        fullscreenButton.onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
-      }).catch((message) => {
-        alert(message);
+          alert: {
+            message: "请使用安卓或苹果设备访问！",
+            title: "提示",
+            btnValue: ["确定"],
+            callback: ({ index, value: { inform, btnName } }) => { },
+            type: "div"
+          }
+        },
+        errors: ({ index, value: { error, btnName } }) => { },
       });
-    };
-    document.body.appendChild(script);
+
+      // var u = navigator.userAgent;
+      // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
+      //   startCompassListener(res => {
+      //     if (res) {
+      //       console.log("startCompassListener", res);
+      //     }
+      //   })
+      //   startWatchPosition(res => {
+      //     if (res) {
+      //       console.log("startWatchPosition", res);
+      //     }
+      //   })
+      // } else if (u.indexOf('iPhone') > -1) {
+      //   mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+      //     console.log("IOS mui", res);
+      //     startCompassListener(res => {
+      //       if (res) {
+      //         console.log("IOS startCompassListener", res);
+      //       }
+      //     })
+      //     startWatchPosition(position => {
+      //       if (position) {
+      //         let latitude = position.coords.latitude; // 纬度
+      //         let longitude = position.coords.longitude; // 经度
+      //         let altitude = position.coords.altitude; // 高度
+      //         let speed = position.coords.speed; // 速度
+      //         let heading = position.coords.heading; // 方向
+      //         console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+      //       }
+      //     })
+      //   }, 'div')
+      // } else {
+      //   return 'noAndoIos'
+      // }
+
+    }
   </script>
 </body>
 
