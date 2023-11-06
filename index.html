@@ -11,7 +11,6 @@
 </head>
 
 <body>
-  <button onclick="checkAuthorization()">重新发起授权</button>
   <div id="unity-container" class="unity-desktop">
     <canvas id="unity-canvas" width=375 height=812></canvas>
     <div id="unity-loading-bar">
@@ -62,9 +61,9 @@
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/web.loader.js";
     var config = {
-      dataUrl: buildUrl + "/c45dcd23b0f89d66290d3755c16ff011.data.unityweb",
+      dataUrl: buildUrl + "/9737da0dc56075f393a146b8106179fb.data.unityweb",
       frameworkUrl: buildUrl + "/a1d222b69b0fff29c5e20a4980b95255.js.unityweb",
-      codeUrl: buildUrl + "/3b2379721280ceba754dfe8b8bd90e53.wasm.unityweb",
+      codeUrl: buildUrl + "/03fbef5ab477928697d2b9a97ee0630f.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "DefaultCompany",
       productName: "ZapperARPro",
@@ -102,13 +101,7 @@
     }
 
     loadingBar.style.display = "block";
-
     let permissionsObj = null;
-
-    function checkAuthorization() {
-      permissionsObj.checkAuthorization();
-    }
-
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
@@ -129,7 +122,7 @@
           permissions: {
             deviceorientation: {
               enabled: true,
-              successResults: (response) => { console.log("deviceorientation", deviceorientation); }
+              successResults: (response) => { console.log("deviceorientation", response); }
             },
             geolocation: {
               enabled: true,
@@ -168,7 +161,6 @@
             console.log("errors", error,);
           },
         });
-
 
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
