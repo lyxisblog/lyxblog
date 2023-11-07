@@ -61,9 +61,9 @@
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/web.loader.js";
     var config = {
-      dataUrl: buildUrl + "/9737da0dc56075f393a146b8106179fb.data.unityweb",
-      frameworkUrl: buildUrl + "/a1d222b69b0fff29c5e20a4980b95255.js.unityweb",
-      codeUrl: buildUrl + "/03fbef5ab477928697d2b9a97ee0630f.wasm.unityweb",
+      dataUrl: buildUrl + "/cd19e05f8222c33ad088cc82641c22ae.data.unityweb",
+      frameworkUrl: buildUrl + "/69852ed3dea844bdc16fa50d6e621c52.js.unityweb",
+      codeUrl: buildUrl + "/560f30fbe77a4eae2e445329d3f6b57a.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "DefaultCompany",
       productName: "ZapperARPro",
@@ -101,7 +101,7 @@
     }
 
     loadingBar.style.display = "block";
-    let permissionsObj = null;
+
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = () => {
@@ -129,9 +129,9 @@
               successResults: (response) => { console.log("geolocation", response); }
             },
             mediaDevices: {
-              enabled: true,
+              enabled: false,
               // canvas: "",
-              successResults: (response) => { console.log("mediaDevices", mediaDevices); },
+              successResults: (response) => { console.log("mediaDevices", response); },
               video: {
                 width: 1280,
                 height: 720,
@@ -161,6 +161,8 @@
             console.log("errors", error,);
           },
         });
+
+
 
         loadingBar.style.display = "none";
         fullscreenButton.onclick = () => {
