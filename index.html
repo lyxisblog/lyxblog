@@ -28,8 +28,11 @@
   <!-- <video width="500" height="500" autoplay class="video"></video> -->
   <!-- <canvas width="500" height="500"></canvas> -->
   <button onclick="checkAuthorization()">检查权限</button>
+  <button onclick="close()">关闭摄像头</button>
+  <button onclick="open()">打开摄像头</button>
   <script>
-    let permissionsObj
+    let permissionsObj;
+    let cameraResponse = null;
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
         console.warn("DeviceOrientation API not available");
@@ -94,7 +97,16 @@
         console.log("res", res);
       })
     }
-     
+
+    function open() {
+      permissionsObj.onStartCamera();
+    }
+
+    function close() {
+      const video = document.querySelector('#video')
+      mediaStreamTrack.getVideoTracks().forEach(track => track.stop());
+      video.value.srcObject = null;
+    }
 
     window.onload = () => {
       // new window.VConsole();
@@ -113,16 +125,19 @@
         permissions: {
           deviceorientation: {
             enabled: true,
-            successResults: (response) => { console.log("deviceorientation", response); }
+            successResults: (response) => { }
           },
           geolocation: {
             enabled: true,
-            successResults: (response) => { console.log("geolocation", response); }
+            successResults: (response) => { }
           },
           mediaDevices: {
             enabled: true,
             // canvas: "",
-            successResults: (response) => { console.log("mediaDevices", response); },
+            successResults: (response) => {
+              console.log("mediaDevices", response);
+              cameraResponse = response;
+            },
             video: {
               width: 1280,
               height: 720,
@@ -151,6 +166,7 @@
         errors: ({ index, value: { error, btnName = "" } }) => {
           console.log("errors", error,);
         },
+        debugger: true,
       });
 
 
