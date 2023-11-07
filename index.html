@@ -104,7 +104,7 @@
 
     function close() {
       const video = document.querySelector('#video')
-      mediaStreamTrack.getVideoTracks().forEach(track => track.stop());
+      mediaStreamTrack.getTracks().forEach(track => track.stop());
       video.value.srcObject = null;
     }
 
