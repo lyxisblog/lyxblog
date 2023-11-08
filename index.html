@@ -17,10 +17,7 @@
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script>
   <style>
-    .open {
-      width: 100px;
-      height: 100px;
-    }
+ 
   </style>
 </head>
 
@@ -29,10 +26,9 @@
   <!-- <canvas width="500" height="500"></canvas> -->
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
-  <button onclick="open()">打开摄像头</button>
+  <button onclick="opens()" type="button">打开摄像头</button>
   <script>
     let permissionsObj;
-    let cameraResponse = null;
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
         console.warn("DeviceOrientation API not available");
@@ -93,19 +89,17 @@
     }
 
     function checkAuthorization() {
-      permissionsObj.checkAuthorization((res) => {
-        console.log("res", res);
+      permissionsObj.checkAuthorization((authorizationResult) => {
+        console.log("authorizationResult", authorizationResult);
       })
     }
 
-    function open() {
+    function opens() {
       permissionsObj.onStartCamera();
     }
 
     function close() {
-      const video = document.querySelector('#video')
-      mediaStreamTrack.getTracks().forEach(track => track.stop());
-      video.value.srcObject = null;
+      permissionsObj.onCloseCamera();
     }
 
     window.onload = () => {
@@ -134,10 +128,7 @@
           mediaDevices: {
             enabled: true,
             // canvas: "",
-            successResults: (response) => {
-              console.log("mediaDevices", response);
-              cameraResponse = response;
-            },
+            successResults: (response) => {},
             video: {
               width: 1280,
               height: 720,
@@ -169,6 +160,7 @@
         debugger: true,
       });
 
+      console.log("permissionsObj",permissionsObj);
 
       // var u = navigator.userAgent;
       // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
