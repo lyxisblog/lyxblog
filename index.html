@@ -15,7 +15,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script>
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script>
   <!-- <script src="../../webAr/asd/immersal/8thwall.js"></script> -->
   <!-- <script src="../../webAr/asd/immersal/permissionsApi.js"></script> -->
@@ -105,135 +105,135 @@
       permissionsObj.onCloseCamera();
     }
 
-    window.onload = () => {
-      // new window.VConsole();
-      // console.log("permissions", new permissions());
+    // window.onload = () => {
+    // new window.VConsole();
+    // console.log("permissions", new permissions());
 
-      // permissionsObj = new permissions.init({
-      //   // loadJSOrCSS:[]        // Need Loader JS Or CSS 
-      //   unityInstance: {        // *SendMessage Target
-      //     target: {},
-      //     sendMessage: {
-      //       gameObject: "UnityJsBridge",
-      //       methodName: "JsToUnityTrigger",
-      //       timer: 1000,
-      //     }
-      //   },
-      //   permissions: {
-      //     deviceorientation: {
-      //       enabled: false,
-      //       successResults: (response) => { }
-      //     },
-      //     geolocation: {
-      //       enabled: false,
-      //       successResults: (response) => { }
-      //     },
-      //     mediaDevices: {
-      //       enabled: false,
-      //       canvas: "cameraCanvas",
-      //       successResults: (response) => { },
-      //       video: {
-      //         width: 1280,
-      //         height: 720,
-      //         // frameRate: { ideal: 10, max: 15 },
-      //         facingMode: { exact: "environment" },
-      //       },
-      //       audio: false,
-      //     }
-      //   },
-      //   deviceAuthorization: {
-      //     confirm: {
-      //       message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
-      //       title: "提示",
-      //       btnValue: ['取消', '允许'],
-      //       callback: ({ index, value: { authorization, btnName } }) => { },
-      //       type: "div"
-      //     },
-      //     alert: {
-      //       message: "请使用安卓或苹果设备访问！",
-      //       title: "提示",
-      //       btnValue: ["确定"],
-      //       callback: ({ index, value: { inform, btnName } }) => { },
-      //       type: "div"
-      //     }
-      //   },
-      //   errors: ({ index, value: { error, btnName = "" } }) => {
-      //     console.log("errors", error,);
-      //   },
-      //   debugger: true,
-      // }, ({ success }) => {
-      //   console.log("success, age", success)
-      //   if (success) {
-
-
+    // permissionsObj = new permissions.init({
+    //   // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+    //   unityInstance: {        // *SendMessage Target
+    //     target: {},
+    //     sendMessage: {
+    //       gameObject: "UnityJsBridge",
+    //       methodName: "JsToUnityTrigger",
+    //       timer: 1000,
+    //     }
+    //   },
+    //   permissions: {
+    //     deviceorientation: {
+    //       enabled: false,
+    //       successResults: (response) => { }
+    //     },
+    //     geolocation: {
+    //       enabled: false,
+    //       successResults: (response) => { }
+    //     },
+    //     mediaDevices: {
+    //       enabled: false,
+    //       canvas: "cameraCanvas",
+    //       successResults: (response) => { },
+    //       video: {
+    //         width: 1280,
+    //         height: 720,
+    //         // frameRate: { ideal: 10, max: 15 },
+    //         facingMode: { exact: "environment" },
+    //       },
+    //       audio: false,
+    //     }
+    //   },
+    //   deviceAuthorization: {
+    //     confirm: {
+    //       message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
+    //       title: "提示",
+    //       btnValue: ['取消', '允许'],
+    //       callback: ({ index, value: { authorization, btnName } }) => { },
+    //       type: "div"
+    //     },
+    //     alert: {
+    //       message: "请使用安卓或苹果设备访问！",
+    //       title: "提示",
+    //       btnValue: ["确定"],
+    //       callback: ({ index, value: { inform, btnName } }) => { },
+    //       type: "div"
+    //     }
+    //   },
+    //   errors: ({ index, value: { error, btnName = "" } }) => {
+    //     console.log("errors", error,);
+    //   },
+    //   debugger: true,
+    // }, ({ success }) => {
+    //   console.log("success, age", success)
+    //   if (success) {
 
 
-      //     // setInterval(() => {
-      //     //   if (this._useCan && this._unityInstance?.target) {
-      //     //     this._unityInstance.target.SendMessage(this._unityInstance.sendMessage.gameObject, this._unityInstance.sendMessage.methodName, JSON.stringify(this._compassAndLocation));
-      //     //   }
-      //     // }, this._unityInstance.sendMessage.timer);
-      //   }
-      // });
 
 
-      new xr8thWall.init({
-        appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-        sceneArguments: {
-          canvas: "camerafeed",
-          onUpdate: ({ cameraPosition, cameraRotation }) => {
-            console.log("onUpdate", cameraPosition, cameraRotation);
-          }
-        },
-        debugger: true,
-      }, ({ success, errors = null }) => {
-        console.log("xr8thWall", success, errors,);
-        if (success) {
+    //     // setInterval(() => {
+    //     //   if (this._useCan && this._unityInstance?.target) {
+    //     //     this._unityInstance.target.SendMessage(this._unityInstance.sendMessage.gameObject, this._unityInstance.sendMessage.methodName, JSON.stringify(this._compassAndLocation));
+    //     //   }
+    //     // }, this._unityInstance.sendMessage.timer);
+    //   }
+    // });
 
+
+    new xr8thWall.init({
+      appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+      sceneArguments: {
+        canvas: "camerafeed",
+        onUpdate: ({ cameraPosition, cameraRotation }) => {
+          console.log("onUpdate", cameraPosition, cameraRotation);
         }
-      })
+      },
+      debugger: true,
+    }, ({ success, errors = null }) => {
+      console.log("xr8thWall", success, errors,);
+      if (success) {
+
+      }
+    })
 
 
 
 
 
 
-      // var u = navigator.userAgent;
-      // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
-      //   startCompassListener(res => {
-      //     if (res) {
-      //       console.log("startCompassListener", res);
-      //     }
-      //   })
-      //   startWatchPosition(res => {
-      //     if (res) {
-      //       console.log("startWatchPosition", res);
-      //     }
-      //   })
-      // } else if (u.indexOf('iPhone') > -1) {
-      //   mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
-      //     console.log("IOS mui", res);
-      //     startCompassListener(res => {
-      //       if (res) {
-      //         console.log("IOS startCompassListener", res);
-      //       }
-      //     })
-      //     startWatchPosition(position => {
-      //       if (position) {
-      //         let latitude = position.coords.latitude; // 纬度
-      //         let longitude = position.coords.longitude; // 经度
-      //         let altitude = position.coords.altitude; // 高度
-      //         let speed = position.coords.speed; // 速度
-      //         let heading = position.coords.heading; // 方向
-      //         console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
-      //       }
-      //     })
-      //   }, 'div')
-      // } else {
-      //   return 'noAndoIos'
-      // }
+    // var u = navigator.userAgent;
+    // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
+    //   startCompassListener(res => {
+    //     if (res) {
+    //       console.log("startCompassListener", res);
+    //     }
+    //   })
+    //   startWatchPosition(res => {
+    //     if (res) {
+    //       console.log("startWatchPosition", res);
+    //     }
+    //   })
+    // } else if (u.indexOf('iPhone') > -1) {
+    //   mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+    //     console.log("IOS mui", res);
+    //     startCompassListener(res => {
+    //       if (res) {
+    //         console.log("IOS startCompassListener", res);
+    //       }
+    //     })
+    //     startWatchPosition(position => {
+    //       if (position) {
+    //         let latitude = position.coords.latitude; // 纬度
+    //         let longitude = position.coords.longitude; // 经度
+    //         let altitude = position.coords.altitude; // 高度
+    //         let speed = position.coords.speed; // 速度
+    //         let heading = position.coords.heading; // 方向
+    //         console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+    //       }
+    //     })
+    //   }, 'div')
+    // } else {
+    //   return 'noAndoIos'
+    // }
 
-    }
+    // }
   </script>
 </body>
 
