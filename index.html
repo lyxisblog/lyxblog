@@ -126,7 +126,11 @@
 
     function recognition() {
       if (XR8.isInitialized()) {
-        xr8.recognition();
+        xr8.recognition((success, position, rotation, scale) => {
+          if (success) {
+            console.log("recognition：", position, rotation, scale);
+          }
+        });
         console.log(XR8.version())
       }
     }
