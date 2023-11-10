@@ -111,7 +111,8 @@
 
     function removeCameraPipelineModules() {
       if (XR8.isInitialized()) {
-        XR8.removeCameraPipelineModules(['camera'])
+        XR8.removeCameraPipelineModules(['camera']);
+        XR8.run({ canvas: document.getElementById('camerafeed') });
         console.log(XR8.version())
       }
     }
@@ -122,6 +123,7 @@
           name: 'camera',
           requiredPermissions: () => ([XR8.XrPermissions.permissions().DEVICE_ORIENTATION]),
         }]);
+        XR8.run({ canvas: document.getElementById('camerafeed') });
         console.log(XR8.version());
       }
     }
