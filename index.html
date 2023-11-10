@@ -30,6 +30,10 @@
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
+
+  <button onclick="removeCameraPipelineModules()">移除相机管道</button>
+  <button onclick="addCameraPipelineModules()">添加相机管道</button>
+
   <script>
     let permissionsObj;
     function startCompassListener(callback) {
@@ -103,6 +107,23 @@
 
     function close() {
       permissionsObj.onCloseCamera();
+    }
+
+    function removeCameraPipelineModules() {
+      if (XR8.isInitialized()) {
+        XR8.removeCameraPipelineModules(['camera'])
+        console.log(XR8.version())
+      }
+    }
+
+    function addCameraPipelineModules() {
+      if (XR8.isInitialized()) {
+        XR8.addCameraPipelineModules([{
+          name: 'camera',
+          requiredPermissions: () => ([XR8.XrPermissions.permissions().DEVICE_ORIENTATION]),
+        }]);
+        console.log(XR8.version());
+      }
     }
 
     // window.onload = () => {
@@ -187,9 +208,8 @@
       },
       debugger: true,
     }, ({ success, errors = null }) => {
-      console.log("xr8thWall", success, errors,);
       if (success) {
-
+        console.log("xr8thWall", success, errors, XR8);
       }
     })
 
