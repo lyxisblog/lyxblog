@@ -16,9 +16,9 @@
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script> -->
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script>
-  <!-- <script src="../../webAr/asd/immersal/8thwall.js"></script> -->
-  <!-- <script src="../../webAr/asd/immersal/permissionsApi.js"></script> -->
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
+  <script src="E:/project/小程序JS库/8thwall.js"></script>
+  <script src="E:/project/小程序JS库/permissionsApi.js"></script>
   <style>
 
   </style>
@@ -31,12 +31,15 @@
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
 
+  <button onclick="xr8.xr8PauseOrResume(true)">Pause</button>
+  <button onclick="xr8.xr8PauseOrResume(false)">Resume</button>
+  <button onclick="XR8.stop()">Stop</button>
+  <button onclick="XR8.run({ canvas: document.getElementById(this._baseConfig.cameraConfig.canvas) });">Run</button>
   <button onclick="removeCameraPipelineModules()">移除相机管道</button>
   <button onclick="addCameraPipelineModules()">添加相机管道</button>
   <button onclick="recognition()">识别</button>
 
   <script>
-    let permissionsObj;
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
         console.warn("DeviceOrientation API not available");
@@ -138,6 +141,8 @@
     // window.onload = () => {
     // new window.VConsole();
     // console.log("permissions", new permissions());
+    // let permissionsObj;
+    // let xr8 = null;
 
     // permissionsObj = new permissions.init({
     //   // loadJSOrCSS:[]        // Need Loader JS Or CSS 
@@ -151,12 +156,12 @@
     //   },
     //   permissions: {
     //     deviceorientation: {
-    //       enabled: false,
-    //       successResults: (response) => { }
+    //       enabled: true,
+    //       successResults: (response) => { console.log("deviceorientation", response); }
     //     },
     //     geolocation: {
-    //       enabled: false,
-    //       successResults: (response) => { }
+    //       enabled: true,
+    //       successResults: (response) => { console.log("geolocation", response); }
     //     },
     //     mediaDevices: {
     //       enabled: false,
@@ -190,44 +195,45 @@
     //   errors: ({ index, value: { error, btnName = "" } }) => {
     //     console.log("errors", error,);
     //   },
-    //   debugger: true,
+    //   debugger: false,
     // }, ({ success }) => {
-    //   console.log("success, age", success)
     //   if (success) {
 
+        // start 8thwall
+        xr8 = new xr8thWall.Init({
+          appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+          cameraConfig: {
+            enabled: true,
+            canvas: "camerafeed",
+            onUpdate: ({ cameraPosition, cameraRotation }) => {
+              console.log("onUpdate", cameraPosition, cameraRotation);
+              // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
+            }
+          },
+          debugger: true,
+        }, ({ success, errors = null }) => {
+          if (success) {
+            console.log("xr8thWall", success, errors, XR8, xr8);
+            // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
+            // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
+            //   if (success) {
+            //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
+            //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
+            //     console.log("recognition：", position, rotation, scale, data);
+            //   }
+            // });
+          }
+        }, ({ message }) => {
+          console.log("message", message);
+        })
 
-
-
-    //     // setInterval(() => {
-    //     //   if (this._useCan && this._unityInstance?.target) {
-    //     //     this._unityInstance.target.SendMessage(this._unityInstance.sendMessage.gameObject, this._unityInstance.sendMessage.methodName, JSON.stringify(this._compassAndLocation));
-    //     //   }
-    //     // }, this._unityInstance.sendMessage.timer);
+        // setInterval(() => {
+        //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
+        //     permissionsObj._compassAndLocation
+        //   ));
+        // }, 1000);
     //   }
     // });
-
-
-    let xr8 = new xr8thWall.Init({
-      appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-      cameraConfig: {
-        enabled: true,
-        canvas: "camerafeed",
-        onUpdate: ({ cameraPosition, cameraRotation }) => {
-          console.log("onUpdate", cameraPosition, cameraRotation);
-        }
-      },
-      debugger: true,
-    }, ({ success, errors = null }) => {
-      if (success) {
-        console.log("xr8thWall", success, errors, XR8, xr8);
-      }
-    }, ({ message }) => {
-      console.log("message", message);
-    })
-
-
-
-
 
 
 
