@@ -19,8 +19,14 @@
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/permissionsApi.js"></script> -->
-  <!-- <script src="./arILMLibrary.js"></script> -->
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script> -->
+
+  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script>
+  <script
+    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script>
+  <script src="./arILMLibrary.js"></script>
+  <script type="text/javascript"
+    src="https://webapi.amap.com/maps?v=1.4.15&key=e32c8c4025aa0f5d1d4069142348db68"></script>
   <style>
 
   </style>
@@ -203,32 +209,32 @@
     //   if (success) {
 
     // start 8thwall
-    // xr8 = new xr8thWall.Init({
-    //   appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-    //   cameraConfig: {
-    //     enabled: true,
-    //     canvas: "camerafeed",
-    //     onUpdate: ({ cameraPosition, cameraRotation }) => {
-    //       console.log("onUpdate", cameraPosition, cameraRotation);
-    //       // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
-    //     }
-    //   },
-    //   debugger: true,
-    // }, ({ success, errors = null }) => {
-    //   if (success) {
-    //     console.log("xr8thWall", success, errors, XR8, xr8);
-    //     // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
-    //     // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
-    //     //   if (success) {
-    //     //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
-    //     //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
-    //     //     console.log("recognition：", position, rotation, scale, data);
-    //     //   }
-    //     // });
-    //   }
-    // }, ({ message }) => {
-    //   console.log("message", message);
-    // })
+    xr8 = new xr8thWall.Init({
+      appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+      cameraConfig: {
+        enabled: true,
+        canvas: "camerafeed",
+        onUpdate: ({ cameraPosition, cameraRotation }) => {
+          console.log("onUpdate", cameraPosition, cameraRotation);
+          // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
+        }
+      },
+      debugger: true,
+    }, ({ success, errors = null }) => {
+      if (success) {
+        console.log("xr8thWall", success, errors, XR8, xr8);
+        // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
+        // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
+        //   if (success) {
+        //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
+        //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
+        //     console.log("recognition：", position, rotation, scale, data);
+        //   }
+        // });
+      }
+    }, ({ message }) => {
+      console.log("message", message);
+    })
 
     // setInterval(() => {
     //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
@@ -238,6 +244,37 @@
     //   }
     // });
 
+    AMap.plugin('AMap.Geolocation', function () {
+      var geolocation = new AMap.Geolocation({
+        enableHighAccuracy: true, // 启用高精度定位
+        timeout: 10000, // 超时时间
+      });
+
+      console.log("geolocation", geolocation);
+
+      // geolocation.getCurrentPosition(function (status, result) {
+      //   if (status === 'complete') {
+      //     // 获取当前位置的经纬度
+      //     var lng = result.position.lng;
+      //     var lat = result.position.lat;
+      //     console.log('当前位置经度：' + lng + '，纬度：' + lat);
+      //   } else {
+      //     console.error('定位失败：' + result.info);
+      //   }
+      // });
+
+      geolocation.watchPosition(function (status, result) {
+        console.log("watchPosition", status, result);
+        if (status === 'complete') {
+          // 获取实时位置的经纬度
+          var lng = result.position.lng;
+          var lat = result.position.lat;
+          console.log('实时位置经度：' + lng + '，纬度：' + lat, 'result:', result);
+        } else {
+          console.error('定位失败：' + result.info);
+        }
+      });
+    });
 
 
     // var u = navigator.userAgent;
@@ -278,6 +315,8 @@
     // }
 
     let arLib = new ArILM.Init({
+      debugger: true,
+    }, () => {
 
     })
   </script>
