@@ -1,131 +1,320 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity WebGL Player | Web3D</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="stylesheet" href="TemplateData/style.css">
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-control" content="no-cache">
+  <title>Document</title>
+  <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/css/mui.min.css"
+    integrity="sha512-uclHupzhjfJ5Zbsweb6eEK3HyTUpSfiWq/+ORo20uQLZg3yI5Jg4iCZYOD5Q1Q5Ftm4FG9kCzwT82bVcNgFMRw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mui/3.7.1/js/mui.min.js"
+    integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script> -->
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
+  <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
+  <!-- <script src="E:/project/小程序JS库/permissionsApi.js"></script> -->
+  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
+
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
+  <!-- <script
+    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
+  <!-- <script src="./arILMLibrary.js"></script> -->
+  </style>
 </head>
 
 <body>
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" style="background: transparent;position: fixed;left: 0px;top: 0px;"></canvas>
-    <canvas id="xr8Canvas"></canvas>
-    <div id="unity-loading-bar">
-      <div id="unity-logo"></div>
-      <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
-      </div>
-    </div>
-    <div id="unity-warning"> </div>
-    <div id="unity-footer">
-      <div id="unity-webgl-logo"></div>
-      <div id="unity-fullscreen-button"></div>
-      <div id="unity-build-title">Web3D</div>
-    </div>
-  </div>
+  <!-- <video width="500" height="500" autoplay class="video"></video> -->
+  <canvas id="camerafeed"></canvas>
+  <button onclick="checkAuthorization()">检查权限</button>
+  <button onclick="close()">关闭摄像头</button>
+  <button onclick="opens()" type="button">打开摄像头</button>
+
+  <button onclick="xr8.xr8PauseOrResume(true)">Pause</button>
+  <button onclick="xr8.xr8PauseOrResume(false)">Resume</button>
+  <button onclick="XR8.stop()">Stop</button>
+  <button onclick="XR8.run({ canvas: document.getElementById('camerafeed') });">Run</button>
+  <button onclick="removeCameraPipelineModules()">移除相机管道</button>
+  <button onclick="addCameraPipelineModules()">添加相机管道</button>
+  <button onclick="recognition()">识别</button>
+
+
   <script>
-    var container = document.querySelector("#unity-container");
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBarFull = document.querySelector("#unity-progress-bar-full");
-    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-    var warningBanner = document.querySelector("#unity-warning");
+    function startCompassListener(callback) {
+      if (!window["DeviceOrientationEvent"]) {
+        console.warn("DeviceOrientation API not available");
+        return;
+      }
+      let absoluteListener = (e) => {
+        if (!e.absolute || e.alpha == null || e.beta == null || e.gamma == null)
+          return;
+        let compass = -(e.alpha + e.beta * e.gamma / 90);
+        compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
+        window.removeEventListener("deviceorientation", webkitListener);
+        callback(compass);
+      };
+      let webkitListener = (e) => {
+        let compass = e.webkitCompassHeading;
+        if (compass != null && !isNaN(compass)) {
+          callback(compass);
+          window.removeEventListener("deviceorientationabsolute", absoluteListener);
+        }
+      }
 
-    // Shows a temporary message banner/ribbon for a few seconds, or
-    // a permanent error message on top of the canvas if type=='error'.
-    // If type=='warning', a yellow highlight color is used.
-    // Modify or remove this function to customize the visually presented
-    // way that non-critical warnings and error messages are presented to the
-    // user.
-    function unityShowBanner(msg, type) {
-      function updateBannerVisibility() {
-        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      function addListeners() {
+        window.addEventListener("deviceorientationabsolute", absoluteListener);
+        window.addEventListener("deviceorientation", webkitListener);
       }
-      var div = document.createElement('div');
-      div.innerHTML = msg;
-      warningBanner.appendChild(div);
-      if (type == 'error') div.style = 'background: red; padding: 10px;';
-      else {
-        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-        setTimeout(function () {
-          warningBanner.removeChild(div);
-          updateBannerVisibility();
-        }, 5000);
-      }
-      updateBannerVisibility();
+
+      if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
+        DeviceOrientationEvent["requestPermission"]()
+          .then(response => {
+            if (response == "granted") {
+              addListeners();
+            } else
+              console.warn("Permission for DeviceMotionEvent not granted");
+          });
+      } else
+        addListeners();
     }
 
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/Web3D.loader.js";
-    var config = {
-      dataUrl: buildUrl + "/Web3D.data.unityweb",
-      frameworkUrl: buildUrl + "/Web3D.framework.js.unityweb",
-      codeUrl: buildUrl + "/Web3D.wasm.unityweb",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "SF",
-      productName: "Web3D",
-      productVersion: "0.1",
-      showBanner: unityShowBanner,
-    };
-
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
-
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      container.className = "unity-mobile";
-      // Avoid draining fillrate performance on mobile devices,
-      // and default/override low DPI mode on mobile browsers.
-      config.devicePixelRatio = 1;
-      unityShowBanner('WebGL builds are not supported on mobile devices.');
-    } else {
-      canvas.style.width = "1920px";
-      canvas.style.height = "1080px";
+    function startWatchPosition(callback) {
+      if ("geolocation" in navigator) {
+        // 支持Geolocation
+        navigator.geolocation.watchPosition(function (position) {
+          // 成功获取位置信息
+          const latitude = position.coords.latitude; // 纬度
+          const longitude = position.coords.longitude; // 经度
+          const altitude = position.coords.altitude; // 高度
+          const speed = position.coords.speed; // 速度
+          const heading = position.coords.heading; // 方向
+          callback(position)
+        }, function (error) {
+          // 获取位置信息失败
+          console.error("获取位置信息失败：" + error.message);
+        }, { enableHighAccuracy: true, maximumAge: 0 });
+      } else {
+        // 不支持Geolocation
+        console.error("浏览器不支持Geolocation API");
+      }
     }
-    loadingBar.style.display = "block";
 
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = 100 * progress + "%";
-      }).then((unityInstance) => {
-        loadingBar.style.display = "none";
+    function checkAuthorization() {
+      permissionsObj.checkAuthorization((authorizationResult) => {
+        console.log("authorizationResult", authorizationResult);
+      })
+    }
 
-        new xr8thWall.Init({
-          appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-          cameraConfig: {
-            enabled: true,
-            canvas: "xr8Canvas",
-            onUpdate: ({ cameraPosition, cameraRotation }) => {
-              console.log("onUpdate", cameraPosition, cameraRotation);
-            }
-          },
-          debugger: true,
-        }, ({ success, errors = null }) => {
+    function opens() {
+      permissionsObj.onStartCamera();
+    }
+
+    function close() {
+      permissionsObj.onCloseCamera();
+    }
+
+    function removeCameraPipelineModules() {
+      if (XR8.isInitialized()) {
+        xr8.removeImmersalPipelineModules();
+        console.log(XR8.version());
+      }
+    }
+
+    function addCameraPipelineModules() {
+      if (XR8.isInitialized()) {
+        xr8.injectImmersalPipelineModule();
+        console.log(XR8.version())
+      }
+    }
+
+    function recognition() {
+      if (XR8.isInitialized()) {
+        xr8.recognition((success, position, rotation, scale) => {
           if (success) {
-            console.log("xr8thWall", success, errors, XR8, xr8);
+            console.log("recognition：", position, rotation, scale);
           }
-        }, ({ message }) => {
-          console.log("message", message);
         });
+        console.log(XR8.version())
+      }
+    }
+
+    // window.onload = () => {
+    // new window.VConsole();
+    // console.log("permissions", new permissions());
+    // let permissionsObj;
+    // let xr8 = null;
+
+    // permissionsObj = new permissions.init({
+    //   // loadJSOrCSS:[]        // Need Loader JS Or CSS 
+    //   unityInstance: {        // *SendMessage Target
+    //     target: {},
+    //     sendMessage: {
+    //       gameObject: "UnityJsBridge",
+    //       methodName: "JsToUnityTrigger",
+    //       timer: 1000,
+    //     }
+    //   },
+    //   permissions: {
+    //     deviceorientation: {
+    //       enabled: true,
+    //       successResults: (response) => { console.log("deviceorientation", response); }
+    //     },
+    //     geolocation: {
+    //       enabled: true,
+    //       successResults: (response) => { console.log("geolocation", response); }
+    //     },
+    //     mediaDevices: {
+    //       enabled: false,
+    //       canvas: "cameraCanvas",
+    //       successResults: (response) => { },
+    //       video: {
+    //         width: 1280,
+    //         height: 720,
+    //         // frameRate: { ideal: 10, max: 15 },
+    //         facingMode: { exact: "environment" },
+    //       },
+    //       audio: false,
+    //     }
+    //   },
+    //   deviceAuthorization: {
+    //     confirm: {
+    //       message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
+    //       title: "提示",
+    //       btnValue: ['取消', '允许'],
+    //       callback: ({ index, value: { authorization, btnName } }) => { },
+    //       type: "div"
+    //     },
+    //     alert: {
+    //       message: "请使用安卓或苹果设备访问！",
+    //       title: "提示",
+    //       btnValue: ["确定"],
+    //       callback: ({ index, value: { inform, btnName } }) => { },
+    //       type: "div"
+    //     }
+    //   },
+    //   errors: ({ index, value: { error, btnName = "" } }) => {
+    //     console.log("errors", error,);
+    //   },
+    //   debugger: false,
+    // }, ({ success }) => {
+    //   if (success) {
+
+    // start 8thwall
+    // xr8 = new xr8thWall.Init({
+    //   appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+    //   cameraConfig: {
+    //     enabled: true,
+    //     canvas: "camerafeed",
+    //     onUpdate: ({ cameraPosition, cameraRotation }) => {
+    //       console.log("onUpdate", cameraPosition, cameraRotation);
+    //       // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
+    //     }
+    //   },
+    //   debugger: true,
+    // }, ({ success, errors = null }) => {
+    //   if (success) {
+    //     console.log("xr8thWall", success, errors, XR8, xr8);
+    //     // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
+    //     // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
+    //     //   if (success) {
+    //     //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
+    //     //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
+    //     //     console.log("recognition：", position, rotation, scale, data);
+    //     //   }
+    //     // });
+    //   }
+    // }, ({ message }) => {
+    //   console.log("message", message);
+    // })
+
+    // setInterval(() => {
+    //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
+    //     permissionsObj._compassAndLocation
+    //   ));
+    // }, 1000);
+    //   }
+    // });
+
+    // AMap.plugin('AMap.Geolocation', function () {
+    //   var geolocation = new AMap.Geolocation({
+    //     enableHighAccuracy: true, // 启用高精度定位
+    //     timeout: 10000, // 超时时间
+    //   });
+
+    //   console.log("geolocation", geolocation);
+
+    //   // geolocation.getCurrentPosition(function (status, result) {
+    //   //   if (status === 'complete') {
+    //   //     // 获取当前位置的经纬度
+    //   //     var lng = result.position.lng;
+    //   //     var lat = result.position.lat;
+    //   //     console.log('当前位置经度：' + lng + '，纬度：' + lat);
+    //   //   } else {
+    //   //     console.error('定位失败：' + result.info);
+    //   //   }
+    //   // });
+
+    //   geolocation.watchPosition(function (status, result) {
+    //     console.log("watchPosition", status, result);
+    //     if (status === 'complete') {
+    //       // 获取实时位置的经纬度
+    //       var lng = result.position.lng;
+    //       var lat = result.position.lat;
+    //       console.log('实时位置经度：' + lng + '，纬度：' + lat, 'result:', result);
+    //     } else {
+    //       console.error('定位失败：' + result.info);
+    //     }
+    //   });
+    // });
 
 
-        fullscreenButton.onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
-      }).catch((message) => {
-        alert(message);
-      });
-    };
-    document.body.appendChild(script);
+    // var u = navigator.userAgent;
+    // if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1 || u.indexOf('Windows Phone') > -1) {
+    //   startCompassListener(res => {
+    //     if (res) {
+    //       console.log("startCompassListener", res);
+    //     }
+    //   })
+    //   startWatchPosition(res => {
+    //     if (res) {
+    //       console.log("startWatchPosition", res);
+    //     }
+    //   })
+    // } else if (u.indexOf('iPhone') > -1) {
+    //   mui.confirm(`"${window.location.href}"想要访问运动与方向`, '提示', ['取消', '允许'], (res) => {
+    //     console.log("IOS mui", res);
+    //     startCompassListener(res => {
+    //       if (res) {
+    //         console.log("IOS startCompassListener", res);
+    //       }
+    //     })
+    //     startWatchPosition(position => {
+    //       if (position) {
+    //         let latitude = position.coords.latitude; // 纬度
+    //         let longitude = position.coords.longitude; // 经度
+    //         let altitude = position.coords.altitude; // 高度
+    //         let speed = position.coords.speed; // 速度
+    //         let heading = position.coords.heading; // 方向
+    //         console.log("IOS startWatchPosition", `latitude：${latitude},longitude:${longitude}`);
+    //       }
+    //     })
+    //   }, 'div')
+    // } else {
+    //   return 'noAndoIos'
+    // }
+
+    // }
+
+    let arLib = new ArILM.Init({
+      debugger: true,
+    }, () => {
+
+    })
   </script>
 </body>
 
