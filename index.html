@@ -14,17 +14,17 @@
     integrity="sha512-5LSZkoyayM01bXhnlp2T6+RLFc+dE4SIZofQMxy/ydOs3D35mgQYf6THIQrwIMmgoyjI+bqjuuj4fQcGLyJFYg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
-  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/PluginRepositories/permissions.js"></script> -->
-  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/permissionsApi.js"></script> -->
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
-  <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
-  <!-- <script src="E:/project/小程序JS库/permissionsApi.js"></script> -->
-  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script> -->
+  <!-- <script src="E:/project/小程序JS库/8thwall.js"></script>
+  <script src="E:/project/小程序JS库/permissions.js"></script> -->
+  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script>
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script> -->
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
+  <!--<script
+     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script> -->
   <!-- <script src="./arILMLibrary.js"></script> -->
   </style>
 </head>
@@ -36,6 +36,7 @@
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
 
+  <button onclick="startXR8()">开启XR8</button>
   <button onclick="xr8.xr8PauseOrResume(true)">Pause</button>
   <button onclick="xr8.xr8PauseOrResume(false)">Resume</button>
   <button onclick="XR8.stop()">Stop</button>
@@ -151,7 +152,6 @@
     // let xr8 = null;
 
     // permissionsObj = new permissions.init({
-    //   // loadJSOrCSS:[]        // Need Loader JS Or CSS 
     //   unityInstance: {        // *SendMessage Target
     //     target: {},
     //     sendMessage: {
@@ -163,11 +163,11 @@
     //   permissions: {
     //     deviceorientation: {
     //       enabled: true,
-    //       successResults: (response) => { console.log("deviceorientation", response); }
+    //       successResults: (response) => { }
     //     },
     //     geolocation: {
     //       enabled: true,
-    //       successResults: (response) => { console.log("geolocation", response); }
+    //       successResults: (response) => { }
     //     },
     //     mediaDevices: {
     //       enabled: false,
@@ -204,34 +204,62 @@
     //   debugger: false,
     // }, ({ success }) => {
     //   if (success) {
-
-    // start 8thwall
-    xr8 = new xr8thWall.Init({
-      appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-      cameraConfig: {
-        enabled: true,
-        canvas: "camerafeed",
-        onUpdate: ({ cameraPosition, cameraRotation }) => {
-          console.log("onUpdate", cameraPosition, cameraRotation);
-          // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
-        }
-      },
-      debugger: true,
-    }, ({ success, errors = null }) => {
-      if (success) {
-        console.log("xr8thWall", success, errors, XR8, xr8);
-        // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
-        // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
-        //   if (success) {
-        //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
-        //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
-        //     console.log("recognition：", position, rotation, scale, data);
-        //   }
-        // });
-      }
-    }, ({ message }) => {
-      console.log("message", message);
-    })
+    //     xr8thWall.Init.loadNeedJsOrCSS(
+    //       [
+    //         {
+    //           // 8thWall Web - Replace the app key here with your own app key
+    //           src: `https://apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri`,
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/three.min.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/UPNG.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/pako.min.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           // XR Extras - provides utilities like load screen, almost there, and error handling.
+    //           //  See github.com/8thwall/web/tree/master/xrextras
+    //           // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/xrextras.js",
+    //           src: "https://cdn.8thwall.com/web/xrextras/xrextras.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           // Coaching Overlay 
+    //           // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/coaching-overlay.js",
+    //           src: "https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.css",
+    //           type: 2,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/jquery-3.4.1.min.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/vconsole.min.js",
+    //           type: 1,
+    //         },
+    //         {
+    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/8thwall.css",
+    //           type: 2,
+    //         }
+    //       ],
+    //       () => {
+    //         console.log("Preload complete");
+    //       })
 
     // setInterval(() => {
     //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
@@ -240,6 +268,40 @@
     // }, 1000);
     //   }
     // });
+
+    function startXR8() {
+      // start 8thwall
+      xr8 = new xr8thWall.Init({
+        appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+        cameraConfig: {
+          enabled: true,
+          canvas: "camerafeed",
+          onUpdate: ({ cameraPosition, cameraRotation }) => {
+            console.log("onUpdate", cameraPosition, cameraRotation);
+            // unityInstance.SendMessage('UnityJsBridge', 'SyncCameraTransform', JSON.stringify({ Position: cameraPosition, Rotation: cameraRotation }));
+          }
+        },
+        debugger: true,
+      }, ({ success, errors = null }) => {
+        if (success) {
+          console.log("xr8thWall", success, errors, XR8, xr8);
+          // window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "xr8Initialize", arguments: { "success": "true" } }]));
+          // xr8.recognition(({success, position, rotation, scale, data}) => {//识别、
+          //   if (success) {
+          //     window.unityInstance.SendMessage('UnityJsBridge', 'JsToUnityTrigger', JSON.stringify([{ "method": "mapRecognitionSuccess", arguments: { "mapID": String(data.map) } }]));
+          //     window.unityInstance.SendMessage('UnityJsBridge', 'SyncARSpaceTransform', JSON.stringify({ Position: position, Rotation: { x: rotation['_x'], y: rotation['_y'], z: rotation['_z'], w: rotation['_w'] } }));
+          //     console.log("recognition：", position, rotation, scale, data);
+          //   }
+          // });
+        } else {
+          console.log("message", errors);
+        }
+      }, ({ message }) => {
+        console.log("message", message);
+      })
+    }
+
+
 
     // AMap.plugin('AMap.Geolocation', function () {
     //   var geolocation = new AMap.Geolocation({
@@ -311,11 +373,11 @@
 
     // }
 
-    // let arLib = new ArILM.Init({
-    //   debugger: true,
-    // }, () => {
+    let arLib = new ArILM.Init({
+      debugger: true,
+    }, () => {
 
-    // })
+    })
   </script>
 </body>
 
