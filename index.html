@@ -47,8 +47,6 @@
   <button onclick="recognition()">识别</button>
   <button onclick="canvasScreenshot()">截图</button>
 
-  <img id="canvasScreenshot" src="" alt="" width="100%" height="300px">
-  <img id="playScreenshot" src="" alt="" width="100%" height="300px">
   <script>
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
@@ -150,8 +148,8 @@
 
     function canvasScreenshot() {
       if (XR8.isInitialized()) {
-        xr8.canvasScreenshot(({ shareImage, data }) => {
-          console.log({ shareImage, data });
+        xr8.canvasScreenshot(({ shareImage, data, screenshotPicture }) => {
+          console.log({ shareImage, data, screenshotPicture });
         })
         console.log(XR8.version())
       }
