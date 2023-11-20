@@ -15,12 +15,12 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
-  <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
+  <script src="E:/project/小程序JS库/8thwall.js"></script>
   <!-- <script src="E:/project/小程序JS库/permissions.js"></script> -->
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script> -->
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
-  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script>
+  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script> -->
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
   <!--<script
@@ -32,6 +32,7 @@
 <body>
   <!-- <video width="500" height="500" autoplay class="video"></video> -->
   <canvas id="camerafeed"></canvas>
+  <canvas id="unityCanvas"></canvas>
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
@@ -46,7 +47,8 @@
   <button onclick="recognition()">识别</button>
   <button onclick="canvasScreenshot()">截图</button>
 
-
+  <img id="canvasScreenshot" src="" alt="" width="100%" height="300px">
+  <img id="playScreenshot" src="" alt="" width="100%" height="300px">
   <script>
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
