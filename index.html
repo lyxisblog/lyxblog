@@ -17,14 +17,14 @@
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/permissions.js"></script> -->
-  <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script> -->
+  <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script>
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
-  <!--<script
-     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script> -->
+  <script
+     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
   <!-- <script src="./arILMLibrary.js"></script> -->
   </style>
 </head>
@@ -32,7 +32,8 @@
 <body>
   <!-- <video width="500" height="500" autoplay class="video"></video> -->
   <canvas id="camerafeed"></canvas>
-  <canvas id="unityCanvas" style="background: transparent;"></canvas>
+  <canvas id="unityCanvas"
+    tyle="background: transparent; position: fixed; left: 0px; top: 0px; z-index: 801; width: 375px; height: 667px; cursor: default;"></canvas>
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
@@ -148,8 +149,8 @@
 
     function canvasScreenshot() {
       if (XR8.isInitialized()) {
-        xr8.canvasScreenshot(({ shareImage, data, screenshotPicture }) => {
-          console.log({ shareImage, data, screenshotPicture });
+        xr8.canvasScreenshot(({ xr8Image, xr8Imagedata, screenshotPicture }) => {
+          console.log({ xr8Image, xr8Imagedata, screenshotPicture });
         })
         console.log(XR8.version())
       }
@@ -292,6 +293,9 @@
           }
         },
         debugger: true,
+        unityConfig: {
+          canvas: "unityCanvas",
+        },
       }, ({ success, errors = null }) => {
         if (success) {
           console.log("xr8thWall", success, errors, XR8, xr8);
@@ -311,7 +315,7 @@
       })
     }
 
-    startXR8();
+    // startXR8();
 
     // AMap.plugin('AMap.Geolocation', function () {
     //   var geolocation = new AMap.Geolocation({
@@ -383,11 +387,11 @@
 
     // }
 
-    // let arLib = new ArILM.Init({
-    //   debugger: true,
-    // }, () => {
+    let arLib = new ArILM.Init({
+      debugger: true,
+    }, () => {
 
-    // })
+    })
   </script>
 </body>
 
