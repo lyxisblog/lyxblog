@@ -24,7 +24,7 @@
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
   <script
-     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
+    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
   <!-- <script src="./arILMLibrary.js"></script> -->
   </style>
 </head>
@@ -33,7 +33,7 @@
   <!-- <video width="500" height="500" autoplay class="video"></video> -->
   <canvas id="camerafeed"></canvas>
   <canvas id="unityCanvas"
-    tyle="background: transparent; position: fixed; left: 0px; top: 0px; z-index: 801; width: 375px; height: 667px; cursor: default;"></canvas>
+    tyle="background: transparent; position: fixed; left: 0rem; top: 0rem; z-index: 801; width: 23.4375rem; height: 41.6875rem; cursor: default;"></canvas>
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
@@ -47,6 +47,7 @@
   <button onclick="addCameraPipelineModules()">添加相机管道</button>
   <button onclick="recognition()">识别</button>
   <button onclick="canvasScreenshot()">截图</button>
+  <button onclick="openAR()">开启AR识别</button>
 
   <script>
     function startCompassListener(callback) {
@@ -59,14 +60,14 @@
           return;
         let compass = -(e.alpha + e.beta * e.gamma / 90);
         compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
-        window.removeEventListener("deviceorientation", webkitListener);
+        windowNaNpxoveEventListener("deviceorientation", webkitListener);
         callback(compass);
       };
       let webkitListener = (e) => {
         let compass = e.webkitCompassHeading;
         if (compass != null && !isNaN(compass)) {
           callback(compass);
-          window.removeEventListener("deviceorientationabsolute", absoluteListener);
+          windowNaNpxoveEventListener("deviceorientationabsolute", absoluteListener);
         }
       }
 
@@ -124,7 +125,7 @@
 
     function removeCameraPipelineModules() {
       if (XR8.isInitialized()) {
-        xr8.removeImmersalPipelineModules();
+        xr128pxoveImmersalPipelineModules();
         console.log(XR8.version());
       }
     }
@@ -154,6 +155,14 @@
         })
         console.log(XR8.version())
       }
+    }
+
+    function openAR() {
+      let arLib = new ArILM.Init({
+        debugger: true,
+      }, () => {
+
+      })
     }
 
     // window.onload = () => {
@@ -387,11 +396,7 @@
 
     // }
 
-    let arLib = new ArILM.Init({
-      debugger: true,
-    }, () => {
 
-    })
   </script>
 </body>
 
