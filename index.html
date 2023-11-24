@@ -16,15 +16,15 @@
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
-  <!-- <script src="E:/project/小程序JS库/permissions.js"></script> -->
+  <script src="E:/project/小程序JS库/permissions.js"></script>
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script>
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
-  <script
-    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
+  <!-- <script
+    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script> -->
   <!-- <script src="./arILMLibrary.js"></script> -->
   </style>
 </head>
@@ -49,6 +49,9 @@
   <button onclick="canvasScreenshot()">截图</button>
   <button onclick="openAR()">开启AR识别</button>
   <button onclick="getQmap()">打开QQMap位置信息</button>
+  <button onclick="closeQmap()">关闭QQMap位置信息</button>
+  <button onclick="openWatchPosition()">打开GPS</button>
+  <button onclick="closeWatchPosition()">关闭GPS</button>
 
   <script>
     function startCompassListener(callback) {
@@ -183,6 +186,23 @@
       })
     }
 
+    function closeQmap() {
+      permissionsObj._stopQMapWatchPosition(({ success }) => {
+        console.log("关闭QMap", success);
+      })
+    }
+
+    function openWatchPosition() {
+      permissionsObj._startWatchPosition((position) => {
+        console.log("openWatchPosition", position);
+      });
+    }
+
+    function closeWatchPosition() {
+      permissionsObj._stopWatchPosition();
+      console.log("关闭closeWatchPosition");
+    }
+    
     // window.onload = () => {
     // new window.VConsole();
     // console.log("permissions", new permissions());
@@ -206,7 +226,9 @@
         },
         geolocation: {
           enabled: false,
-          successResults: (response) => { }
+          successResults: (response) => {
+            console.log("geolocationgeolocation", response);
+          }
         },
         mediaDevices: {
           enabled: false,
@@ -243,7 +265,6 @@
       debugger: false,
     }, ({ success }) => {
       if (success) {
-
         // xr8thWall.Init.loadNeedJsOrCSS(
         //   [
         //     {
