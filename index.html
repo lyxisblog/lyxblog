@@ -195,6 +195,7 @@
     function openWatchPosition() {
       permissionsObj._startWatchPosition((position) => {
         console.log("openWatchPosition", position);
+        permissionsObj._permissions.geolocation.successResults(position)
       });
     }
 
@@ -225,7 +226,7 @@
           successResults: (response) => { }
         },
         geolocation: {
-          enabled: false,
+          enabled: true,
           successResults: (response) => {
             console.log("geolocationgeolocation", response);
           }
