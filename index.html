@@ -16,15 +16,15 @@
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/8thwall.js"></script> -->
   <!-- <script src="E:/project/小程序JS库/8thwall.js"></script> -->
-  <!-- <script src="E:/project/小程序JS库/permissions.js"></script> -->
+  <script src="E:/project/小程序JS库/permissions.js"></script>
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/pro/arILMLibrary.js"></script>
 
   <!-- <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Pro/8thwall.js"></script> -->
   <script src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/8thwall/Dev/8thwall.js"></script>
   <!-- <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Pro/permissions.js"></script> -->
-  <script
-    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
+  <!-- <script
+    src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script> -->
   <!-- <script src="./arILMLibrary.js"></script> -->
   </style>
 </head>
@@ -48,6 +48,7 @@
   <button onclick="recognition()">识别</button>
   <button onclick="canvasScreenshot()">截图</button>
   <button onclick="openAR()">开启AR识别</button>
+  <button onclick="getQmap()">打开QQMap位置信息</button>
 
   <script>
     function startCompassListener(callback) {
@@ -165,129 +166,148 @@
       })
     }
 
+    function getEnvironmentInfo(environment = "pre") {
+      fetch(`https://metaoss-webar.shengydt.com/${environment}/UnityLayer/${location.pathname.split('/')[1]}/Environment.json`).then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      }).then(([{ environment, status }]) => {
+        console.log(data);
+      }).catch(error => {
+        console.error('Fetch error:', error);
+      });
+    }
+
+    function getQmap(position) {
+      permissionsObj._startQMapWatchPosition((position) => {
+        console.log("getQmapgetQmapgetQmap", position);
+      })
+    }
+
     // window.onload = () => {
     // new window.VConsole();
     // console.log("permissions", new permissions());
-    // let permissionsObj;
-    // let xr8 = null;
+    let permissionsObj;
+    let xr8 = null;
 
-    // permissionsObj = new permissions.init({
-    //   unityInstance: {        // *SendMessage Target
-    //     target: {},
-    //     sendMessage: {
-    //       gameObject: "UnityJsBridge",
-    //       methodName: "JsToUnityTrigger",
-    //       timer: 1000,
-    //     }
-    //   },
-    //   permissions: {
-    //     deviceorientation: {
-    //       enabled: true,
-    //       successResults: (response) => { }
-    //     },
-    //     geolocation: {
-    //       enabled: true,
-    //       successResults: (response) => { }
-    //     },
-    //     mediaDevices: {
-    //       enabled: false,
-    //       canvas: "cameraCanvas",
-    //       successResults: (response) => { },
-    //       video: {
-    //         width: 1280,
-    //         height: 720,
-    //         // frameRate: { ideal: 10, max: 15 },
-    //         facingMode: { exact: "environment" },
-    //       },
-    //       audio: false,
-    //     }
-    //   },
-    //   deviceAuthorization: {
-    //     confirm: {
-    //       message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
-    //       title: "提示",
-    //       btnValue: ['取消', '允许'],
-    //       callback: ({ index, value: { authorization, btnName } }) => { },
-    //       type: "div"
-    //     },
-    //     alert: {
-    //       message: "请使用安卓或苹果设备访问！",
-    //       title: "提示",
-    //       btnValue: ["确定"],
-    //       callback: ({ index, value: { inform, btnName } }) => { },
-    //       type: "div"
-    //     }
-    //   },
-    //   errors: ({ index, value: { error, btnName = "" } }) => {
-    //     console.log("errors", error,);
-    //   },
-    //   debugger: false,
-    // }, ({ success }) => {
-    //   if (success) {
-    //     xr8thWall.Init.loadNeedJsOrCSS(
-    //       [
-    //         {
-    //           // 8thWall Web - Replace the app key here with your own app key
-    //           src: `https://apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri`,
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/three.min.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/UPNG.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/pako.min.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           // XR Extras - provides utilities like load screen, almost there, and error handling.
-    //           //  See github.com/8thwall/web/tree/master/xrextras
-    //           // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/xrextras.js",
-    //           src: "https://cdn.8thwall.com/web/xrextras/xrextras.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           // Coaching Overlay 
-    //           // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/coaching-overlay.js",
-    //           src: "https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.css",
-    //           type: 2,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/jquery-3.4.1.min.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/vconsole.min.js",
-    //           type: 1,
-    //         },
-    //         {
-    //           src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/8thwall.css",
-    //           type: 2,
-    //         }
-    //       ],
-    //       () => {
-    //         console.log("Preload complete");
-    //       })
+    permissionsObj = new permissions.init({
+      unityInstance: {        // *SendMessage Target
+        target: {},
 
-    // setInterval(() => {
-    //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
-    //     permissionsObj._compassAndLocation
-    //   ));
-    // }, 1000);
-    //   }
-    // });
+        sendMessage: {
+          gameObject: "UnityJsBridge",
+          methodName: "JsToUnityTrigger",
+          timer: 1000,
+        }
+      },
+      permissions: {
+        deviceorientation: {
+          enabled: false,
+          successResults: (response) => { }
+        },
+        geolocation: {
+          enabled: false,
+          successResults: (response) => { }
+        },
+        mediaDevices: {
+          enabled: false,
+          canvas: "cameraCanvas",
+          successResults: (response) => { },
+          video: {
+            width: 1280,
+            height: 720,
+            // frameRate: { ideal: 10, max: 15 },
+            facingMode: { exact: "environment" },
+          },
+          audio: false,
+        }
+      },
+      deviceAuthorization: {
+        confirm: {
+          message: "《AR导航》需要访问您的摄像头、运动与方向，需要您的授权！",
+          title: "提示",
+          btnValue: ['取消', '允许'],
+          callback: ({ index, value: { authorization, btnName } }) => { },
+          type: "div"
+        },
+        alert: {
+          message: "请使用安卓或苹果设备访问！",
+          title: "提示",
+          btnValue: ["确定"],
+          callback: ({ index, value: { inform, btnName } }) => { },
+          type: "div"
+        }
+      },
+      errors: ({ index, value: { error, btnName = "" } }) => {
+        console.log("errors", error,);
+      },
+      debugger: false,
+    }, ({ success }) => {
+      if (success) {
+
+        // xr8thWall.Init.loadNeedJsOrCSS(
+        //   [
+        //     {
+        //       // 8thWall Web - Replace the app key here with your own app key
+        //       src: `https://apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri`,
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/three.min.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/UPNG.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/pako.min.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       // XR Extras - provides utilities like load screen, almost there, and error handling.
+        //       //  See github.com/8thwall/web/tree/master/xrextras
+        //       // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/xrextras.js",
+        //       src: "https://cdn.8thwall.com/web/xrextras/xrextras.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       // Coaching Overlay 
+        //       // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/coaching-overlay.js",
+        //       src: "https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.css",
+        //       type: 2,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/jquery-3.4.1.min.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/vconsole.min.js",
+        //       type: 1,
+        //     },
+        //     {
+        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/8thwall.css",
+        //       type: 2,
+        //     }
+        //   ],
+        //   () => {
+        //     console.log("Preload complete");
+        //   })
+
+        // setInterval(() => {
+        //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
+        //     permissionsObj._compassAndLocation
+        //   ));
+        // }, 1000);
+      }
+    });
 
     function startXR8() {
       // start 8thwall
