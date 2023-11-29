@@ -64,14 +64,14 @@
           return;
         let compass = -(e.alpha + e.beta * e.gamma / 90);
         compass -= Math.floor(compass / 360) * 360; // Wrap into range [0,360].
-        windowNaNpxoveEventListener("deviceorientation", webkitListener);
+        window.removeEventListener("deviceorientation", webkitListener);
         callback(compass);
       };
       let webkitListener = (e) => {
         let compass = e.webkitCompassHeading;
         if (compass != null && !isNaN(compass)) {
           callback(compass);
-          windowNaNpxoveEventListener("deviceorientationabsolute", absoluteListener);
+          window.removeEventListener("deviceorientationabsolute", absoluteListener);
         }
       }
 
@@ -129,7 +129,7 @@
 
     function removeCameraPipelineModules() {
       if (XR8.isInitialized()) {
-        xr128pxoveImmersalPipelineModules();
+        xr8.removeImmersalPipelineModules();
         console.log(XR8.version());
       }
     }
@@ -266,62 +266,62 @@
       debugger: false,
     }, ({ success }) => {
       if (success) {
-        // xr8thWall.Init.loadNeedJsOrCSS(
-        //   [
-        //     {
-        //       // 8thWall Web - Replace the app key here with your own app key
-        //       src: `https://apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri`,
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/three.min.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/UPNG.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/pako.min.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       // XR Extras - provides utilities like load screen, almost there, and error handling.
-        //       //  See github.com/8thwall/web/tree/master/xrextras
-        //       // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/xrextras.js",
-        //       src: "https://cdn.8thwall.com/web/xrextras/xrextras.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       // Coaching Overlay 
-        //       // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/coaching-overlay.js",
-        //       src: "https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.css",
-        //       type: 2,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/jquery-3.4.1.min.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/vconsole.min.js",
-        //       type: 1,
-        //     },
-        //     {
-        //       src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/8thwall.css",
-        //       type: 2,
-        //     }
-        //   ],
-        //   () => {
-        //     console.log("Preload complete");
-        //   })
+        xr8thWall.Init.loadNeedJsOrCSS(
+          [
+            // {
+            //   // 8thWall Web - Replace the app key here with your own app key
+            //   src: `https://apps.8thwall.com/xrweb?appKey=1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri`,
+            //   type: 1,
+            // },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/three.min.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/UPNG.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/pako.min.js",
+              type: 1,
+            },
+            {
+              // XR Extras - provides utilities like load screen, almost there, and error handling.
+              //  See github.com/8thwall/web/tree/master/xrextras
+              // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/xrextras.js",
+              src: "https://cdn.8thwall.com/web/xrextras/xrextras.js",
+              type: 1,
+            },
+            {
+              // Coaching Overlay 
+              // src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/coaching-overlay.js",
+              src: "https://cdn.8thwall.com/web/coaching-overlay/coaching-overlay.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/mui.min.css",
+              type: 2,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/jquery-3.4.1.min.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/Public/vconsole.min.js",
+              type: 1,
+            },
+            {
+              src: "https://metaoss-webar.shengydt.com/PluginRepositories/8thwall/8thwall.css",
+              type: 2,
+            }
+          ],
+          () => {
+            console.log("Preload complete");
+          })
 
         // setInterval(() => {
         //   unityInstance.SendMessage("UnityJsBridge", "JsToUnityTrigger", JSON.stringify(
@@ -335,6 +335,12 @@
       // start 8thwall
       xr8 = new xr8thWall.Init({
         appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+        timeoutConfig: {
+          secondaryWaitingStartTime: 5,
+          secondaryWaitingOverTime: 10,
+          first: { message: "1呀，网络似乎被UFO抢走了，极其不稳定", title: "提示", btnValue: ["重新进入", "继续等待"] },
+          twice: { message: "2似乎并没有将网络获取权，从UFO手中抢过来，需要重新进入！", title: "提示", btnValue: ["确定"] },
+        },
         cameraConfig: {
           enabled: true,
           canvas: "camerafeed",
@@ -437,6 +443,9 @@
     // }
 
     // }
+
+    let cachedResult;
+
 
 
   </script>
