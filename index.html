@@ -373,7 +373,7 @@
       })
     }
 
-    startXR8();
+
 
     // AMap.plugin('AMap.Geolocation', function () {
     //   var geolocation = new AMap.Geolocation({
@@ -447,7 +447,9 @@
 
     let cachedResult;
 
-
+    document.onload = () => {
+      startXR8();
+    }
 
   </script>
 </body>
