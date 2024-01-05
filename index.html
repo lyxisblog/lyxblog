@@ -85,6 +85,7 @@
         DeviceOrientationEvent["requestPermission"]()
           .then(response => {
             if (response == "granted") {
+
               addListeners();
             } else
               console.warn("Permission for DeviceMotionEvent not granted");
@@ -322,6 +323,13 @@
           ],
           () => {
             console.log("Preload complete");
+            let audio = new Audio(`https://metaverse-ar-beta.oss-cn-hangzhou.aliyuncs.com/HotData/WenDaoYuan/WenDaoYuanMiniProgram/POIData/%E6%A5%A0%E6%9C%A8%E5%8E%85%E8%AE%B2%E8%A7%A3%E5%86%85%E5%AE%B9.mp3`);
+            audio.preload = true;
+            audio.loop = true;
+            audio.playsinline = true;
+            // audio.muted = true;
+            audio.webkitPlaysinline = true;
+            audio.play();
           })
 
         // setInterval(() => {
@@ -336,6 +344,7 @@
       // start 8thwall
       xr8 = new xr8thWall.Init({
         appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
+        xrControllerConfigure: {},
         timeoutConfig: {
           secondaryWaitingStartTime: 5,
           secondaryWaitingOverTime: 10,
