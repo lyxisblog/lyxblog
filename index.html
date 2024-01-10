@@ -59,7 +59,7 @@
   <button onclick="wxClick()">发起分享</button>
 
   <script>
-
+    let UHQScreenshotPicture=null;
     function wxClick() {
       wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
         wx.updateAppMessageShareData({
@@ -75,8 +75,8 @@
       });
 
       wx.previewImage({
-        current: 'https://cdn.8thwall.com/web/img/loading/v1/settings-icon-ios.png', // 当前显示图片的http链接
-        urls: ["https://cdn.8thwall.com/web/img/loading/v1/safari-icon.png", "https://cdn.8thwall.com/web/img/runtimeerror/v1/computer-voxel.png"] // 需要预览的图片http链接列表
+        current: UHQScreenshotPicture, // 当前显示图片的http链接
+        urls: [] // 需要预览的图片http链接列表
       });
     }
 
@@ -181,8 +181,9 @@
 
     function canvasScreenshot() {
       if (XR8.isInitialized()) {
-        xr8.canvasScreenshot(({ xr8Image, xr8Imagedata, screenshotPicture }) => {
-          console.log({ xr8Image, xr8Imagedata, screenshotPicture });
+        xr8.canvasScreenshot(({ xr8Image, xr8Imagedata, screenshotPicture, UHQScreenshotPicture }) => {
+          console.log({ xr8Image, xr8Imagedata, screenshotPicture, UHQScreenshotPicture});
+          UHQScreenshotPicture=UHQScreenshotPicture;
         })
         console.log(XR8.version())
       }
