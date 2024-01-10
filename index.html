@@ -61,16 +61,16 @@
   <script>
     let UHQScreenshotPicture = null;
     function wxClick() {
-      wx.updateAppMessageShareData({
-        title: '分享标题', // 分享标题
-        desc: '分享描述', // 分享描述
-        link: 'https://minigame.shengydt.com/000893/index.html?token=889565eada5e57c3511a67546ebcad008f04307c01886d729815d51caed8b098&mapId=4208,4210,4205,4207,4209,4204,4206&isInScenic=true&debug=true', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: '', // 分享图标
-        success: function () {
-          // 设置成功
-          console.log("成功!");
-        }
-      })
+      // wx.updateAppMessageShareData({
+      //   title: '分享标题', // 分享标题
+      //   desc: '分享描述', // 分享描述
+      //   link: 'https://minigame.shengydt.com/000893/index.html?token=889565eada5e57c3511a67546ebcad008f04307c01886d729815d51caed8b098&mapId=4208,4210,4205,4207,4209,4204,4206&isInScenic=true&debug=true', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+      //   imgUrl: '', // 分享图标
+      //   success: function () {
+      //     // 设置成功
+      //     console.log("成功!");
+      //   }
+      // })
 
       // fetch(`https://sit-meta-front.vonechain.com/api/front/user/upload/image`, { method: 'POST', body: { user }, headers: { 'Content-Type': 'application/json' } }).then(response => {
       //   if (!response.ok) throw new Error('Network response was not ok');
