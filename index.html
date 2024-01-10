@@ -72,19 +72,21 @@
         }
       })
 
-      fetch(`https://sit-meta-front.vonechain.com/api/front/user/upload/image`, { method: 'POST', body: { user }, headers: { 'Content-Type': 'application/json' } }).then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      }).then(([{ environment, status }]) => {
-        console.log(data);
-      }).catch(error => {
-        console.error('Fetch error:', error);
-      });
+      // fetch(`https://sit-meta-front.vonechain.com/api/front/user/upload/image`, { method: 'POST', body: { user }, headers: { 'Content-Type': 'application/json' } }).then(response => {
+      //   if (!response.ok) throw new Error('Network response was not ok');
+      //   return response.json();
+      // }).then(([{ environment, status }]) => {
+      //   console.log(data);
+      // }).catch(error => {
+      //   console.error('Fetch error:', error);
+      // });
 
       wx.previewImage({
-        current: UHQScreenshotPicture, // 当前显示图片的http链接
-        urls: [] // 需要预览的图片http链接列表
+        current: "https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Public/Image/indexBackgroundImage.png",
+        urls: []
       });
+
+
     }
 
     function startCompassListener(callback) {
