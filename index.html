@@ -27,9 +27,6 @@
   <script
     src="https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Permissions/Dev/permissions.js"></script>
   <!-- <script src="./arILMLibrary.js"></script> -->
-
-  <!-- 微信 SDK -->
-  <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
   </style>
 </head>
 
@@ -41,7 +38,7 @@
   <button onclick="checkAuthorization()">检查权限</button>
   <button onclick="close()">关闭摄像头</button>
   <button onclick="opens()" type="button">打开摄像头</button>
-
+  
   <button onclick="startXR8()">开启XR8</button>
   <button onclick="xr8.xr8PauseOrResume(true)">Pause</button>
   <button onclick="xr8.xr8PauseOrResume(false)">Resume</button>
@@ -56,39 +53,8 @@
   <button onclick="closeQmap()">关闭QQMap位置信息</button>
   <button onclick="openWatchPosition()">打开GPS</button>
   <button onclick="closeWatchPosition()">关闭GPS</button>
-  <button onclick="wxClick()">发起分享</button>
 
   <script>
-    let UHQScreenshotPicture = null;
-    function wxClick() {
-      // wx.updateAppMessageShareData({
-      //   title: '分享标题', // 分享标题
-      //   desc: '分享描述', // 分享描述
-      //   link: 'https://minigame.shengydt.com/000893/index.html?token=889565eada5e57c3511a67546ebcad008f04307c01886d729815d51caed8b098&mapId=4208,4210,4205,4207,4209,4204,4206&isInScenic=true&debug=true', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-      //   imgUrl: '', // 分享图标
-      //   success: function () {
-      //     // 设置成功
-      //     console.log("成功!");
-      //   }
-      // })
-
-      // fetch(`https://sit-meta-front.vonechain.com/api/front/user/upload/image`, { method: 'POST', body: { user }, headers: { 'Content-Type': 'application/json' } }).then(response => {
-      //   if (!response.ok) throw new Error('Network response was not ok');
-      //   return response.json();
-      // }).then(([{ environment, status }]) => {
-      //   console.log(data);
-      // }).catch(error => {
-      //   console.error('Fetch error:', error);
-      // });
-
-      wx.previewImage({
-        current: "https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Public/Image/indexBackgroundImage.png",
-        urls: ["https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Public/Image/progressBar.png","https://metaverse-webar.oss-cn-hangzhou.aliyuncs.com/PluginRepositories/Public/Image/indexBackgroundImage.png"]
-      });
-
-
-    }
-
     function startCompassListener(callback) {
       if (!window["DeviceOrientationEvent"]) {
         console.warn("DeviceOrientation API not available");
@@ -116,7 +82,7 @@
       }
 
       if (typeof (DeviceOrientationEvent["requestPermission"]) === "function") {
-        DeviceOrientationEvent["requestPermission"]()
+        DeviceOrientationEvent["requestPermission"]() 
           .then(response => {
             if (response == "granted") {
 
@@ -190,16 +156,8 @@
 
     function canvasScreenshot() {
       if (XR8.isInitialized()) {
-        xr8.canvasScreenshot(({ xr8Image, xr8Imagedata, screenshotPicture, UHQScreenshotPicture }) => {
-          console.log({ xr8Image, xr8Imagedata, screenshotPicture, UHQScreenshotPicture });
-          var binaryData = atob(UHQScreenshotPicture);
-
-          var blob = new Blob([binaryData], { type: 'text/plain' });
-
-          // 生成URL链接
-          var url = window.URL.createObjectURL(blob);
-          console.log("HTTP URL:", url);
-          UHQScreenshotPicture = url;
+        xr8.canvasScreenshot(({ xr8Image, xr8Imagedata, screenshotPicture }) => {
+          console.log({ xr8Image, xr8Imagedata, screenshotPicture });
         })
         console.log(XR8.version())
       }
@@ -209,7 +167,7 @@
       let arLib = new ArILM.Init({
         debugger: true,
       }, () => {
-
+        
       })
     }
 
@@ -365,13 +323,6 @@
           ],
           () => {
             console.log("Preload complete");
-            let audio = new Audio(`https://metaverse-ar-beta.oss-cn-hangzhou.aliyuncs.com/HotData/WenDaoYuan/WenDaoYuanMiniProgram/POIData/%E6%A5%A0%E6%9C%A8%E5%8E%85%E8%AE%B2%E8%A7%A3%E5%86%85%E5%AE%B9.mp3`);
-            audio.preload = true;
-            audio.loop = true;
-            audio.playsinline = true;
-            // audio.muted = true;
-            audio.webkitPlaysinline = true;
-            audio.play();
           })
 
         // setInterval(() => {
@@ -386,7 +337,6 @@
       // start 8thwall
       xr8 = new xr8thWall.Init({
         appKey: "1JQhYDLd1E7p8jnKth96BNIyfd0zRIqfMejyXzj0shJjcFMiSIybdWPFDzGq95nagyx2ri",
-        xrControllerConfigure: {},
         timeoutConfig: {
           secondaryWaitingStartTime: 5,
           secondaryWaitingOverTime: 10,
@@ -499,38 +449,8 @@
     let cachedResult;
 
     document.onload = () => {
-      startXR8();
+      // startXR8();
     }
-
-    fetch(`https://meta-gateway.shengydt.com/api/admin/wechat/config?url=${encodeURIComponent('https://minigame.shengydt.com/000893/index.html?token=889565eada5e57c3511a67546ebcad008f04307c01886d729815d51caed8b098&mapId=4208,4210,4205,4207,4209,4204,4206&isInScenic=true&debug=true')}`).then(response => {
-      if (!response.ok) throw new Error('Network response was not ok');
-      return response.json();
-    }).then((data) => {
-      wx.config({
-        debug: false,
-        appId: data.data.appId,
-        timestamp: data.data.timestamp,
-        nonceStr: data.data.nonceStr,
-        signature: data.data.signature,
-        jsApiList: data.data.jsApiList,
-        appId: "wx9aa33c63d524f541",
-        timestamp: "1696219424",
-        nonceStr: "b0e510a01ab1407ab2309b9fecfb73a7",
-        signature: "3138d44e9d07d9c02aa916fec272efdd217c9c1b",
-        jsApiList: [
-          'onMenuShareTimeline',						//分享到微信朋友圈
-          'onMenuShareAppMessage',					//分享给微信朋友
-          'onMenuShareQQ',							//分享到QQ
-          'onMenuShareQZone',							//分享到QQ空间
-          "updateAppMessageShareData",  //分享到微信及QQ（新接口）
-          "updateTimelineShareData",    //分享到朋友圈”及“分享到QQ空间（新接口）
-          "downloadImage",
-          "scanQRCode"
-        ]
-      });
-    }).catch(error => {
-      console.error('Fetch error:', error);
-    });
 
   </script>
 </body>
